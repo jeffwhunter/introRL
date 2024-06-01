@@ -1,0 +1,47 @@
+cmake_minimum_required(VERSION 3.14...3.29)
+
+project(
+    IntroRL
+    VERSION 2.5.0
+    DESCRIPTION "Exercises from Reinforcement Learning: An Introduction"
+    LANGUAGES CXX)
+
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    set(CMAKE_CXX_EXTENSIONS OFF)
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+    include(CTest)
+endif()
+
+set(DEFAULT_BUILD_TYPE "Release")
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    message(
+        STATUS
+        "Setting build type to '${DEFAULT_BUILD_TYPE}' as none was specified.")
+
+    set(
+        CMAKE_BUILD_TYPE
+        "${DEFAULT_BUILD_TYPE}"
+        CACHE STRING
+        "Choose the type of build."
+        FORCE)
+
+    set_property(
+        CACHE
+        CMAKE_BUILD_TYPE PROPERTY
+        STRINGS
+        "Debug"
+        "Release"
+        "MinSizeRel"
+        "RelWithDebInfo")
+endif()
+
+find_package(ArrayFire REQUIRED)
+find_package(indicators REQUIRED)
+find_package(Matplot++ REQUIRED)
+
+add_subdirectory(src)
+add_subdirectory(exercises)
+
+if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR INTRORL_BUILD_TESTING) AND BUILD_TESTING)
+    add_subdirectory(tests)
+endif()
