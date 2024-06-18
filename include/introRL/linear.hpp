@@ -5,12 +5,12 @@ namespace af
     class array;
 }
 
-namespace introRL::linear
+namespace irl::linear
 {
     /// <summary>
     /// When arrayfire gets an array index, it doesn't do anything convenient, and simply
     /// returns the elements indexed in memory order. In order to get it to act like
-    /// numpy, and return one indexed element per row, you must first 'linearize' the
+    /// numpy can, and return one indexed element per row, you must first 'linearize' the
     /// index's elements (convert them to memory order).
     /// </summary>
     /// <param name="i">
@@ -22,5 +22,5 @@ namespace introRL::linear
     /// An array of indices in memory order, the first indexing  the first row, the
     /// second indexing the second row, the third indexing the third, and so on.
     /// </returns>
-    const af::array index(const af::array& i);
+    af::array index(const af::array& i);
 }

@@ -38,6 +38,7 @@ endif()
 find_package(ArrayFire REQUIRED)
 find_package(indicators REQUIRED)
 find_package(Matplot++ REQUIRED)
+find_package(stronk REQUIRED)
 
 add_subdirectory(src)
 add_subdirectory(exercises)

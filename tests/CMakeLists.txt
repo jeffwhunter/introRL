@@ -1,16 +1,16 @@
 find_package(Catch2 REQUIRED)
 find_package(trompeloeil REQUIRED)
 
-set(HEADER_LIST testUtils.hpp)
-
 set(
     SOURCE_LIST
-    actionsTests.cpp
-    environmentsTests.cpp
-    linearTests.cpp
-    reinforcementTests.cpp)
+    actTest.cpp
+    agentsTest.cpp
+    algorithmTest.cpp
+    environmentsTest.cpp
+    linearTest.cpp
+    resultsTest.cpp)
 
-add_executable(introRLtests ${HEADER_LIST} ${SOURCE_LIST})
+add_executable(introRLtests ${SOURCE_LIST})
 target_compile_features(introRLtests PRIVATE cxx_std_23)
 target_link_libraries(
     introRLtests

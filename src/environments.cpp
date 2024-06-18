@@ -1,11 +1,26 @@
 #include <arrayfire.h>
 
+#include "introRL/act.hpp"
 #include "introRL/environments.hpp"
+#include "introRL/types.hpp"
 
-namespace introRL::environments
+namespace irl::bandit::environments
 {
-    const af::array bandit(const af::array& qStar, const af::array& linearActionIndices)
+    Stationary::Stationary(ActionCount nActions, RunCount nRuns)
+        : m_qStar{
+            af::randn(nRuns.unwrap<RunCount>(), nActions.unwrap<ActionCount>(), f32)}
+    {}
+
+    Rewards Stationary::reward(const Actions& actions) const
     {
-        return af::randn(qStar.dims(0), f32) + qStar(linearActionIndices);
+        return irl::Rewards{
+            af::randn(m_qStar.dims(0), f32) + m_qStar(actions.unwrap<irl::Actions>())};
     }
+
+    Actions Stationary::optimal() const
+    {
+        return act::greedy(m_qStar);
+    }
+
+    void Stationary::update() const {}
 }

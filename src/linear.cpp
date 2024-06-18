@@ -2,11 +2,11 @@
 
 #include "introRL/linear.hpp"
 
-namespace introRL::linear
+namespace irl::linear
 {
-    const af::array index(const af::array & i)
+    af::array index(const af::array & i)
     {
-        auto dZero{i.dims(0)};
+        const auto dZero{i.dims(0)};
 
         return af::iota(dZero, 1, u32) + (dZero * i).as(u32);
     }
