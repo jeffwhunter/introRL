@@ -15,6 +15,7 @@
 #include <introRL/environments.hpp>
 #include <introRL/results.hpp>
 
+using namespace indicators::option;
 using namespace irl;
 using namespace irl::bandit;
 using namespace irl::bandit::agents;
@@ -176,17 +177,17 @@ int main()
     for (const auto& setup : SETUPS)
     {
         indicators::ProgressBar bar{
-            indicators::option::MaxProgress{PROGRESS_TICKS},
-            indicators::option::ForegroundColor{setup.barColour},
-            indicators::option::BarWidth{PROGRESS_WIDTH},
-            indicators::option::Start{"["},
-            indicators::option::Fill{"="},
-            indicators::option::Lead{">"},
-            indicators::option::Remainder{" "},
-            indicators::option::End{"]"},
-            indicators::option::PrefixText{setup.barTitle},
-            indicators::option::ShowElapsedTime{true},
-            indicators::option::ShowRemainingTime{true}};
+            MaxProgress{PROGRESS_TICKS},
+            ForegroundColor{setup.barColour},
+            BarWidth{PROGRESS_WIDTH},
+            Start{"["},
+            Fill{"="},
+            Lead{">"},
+            Remainder{" "},
+            End{"]"},
+            PrefixText{setup.barTitle},
+            ShowElapsedTime{true},
+            ShowRemainingTime{true}};
 
         bar.set_progress(0);
 

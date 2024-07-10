@@ -6,7 +6,8 @@
 
 #include "introRL/act.hpp"
 #include "introRL/afUtils.hpp"
-#include "introRL/types.hpp"
+#include "introRL/banditTypes.hpp"
+#include "introRL/basicTypes.hpp"
 
 namespace irl::bandit::agents
 {

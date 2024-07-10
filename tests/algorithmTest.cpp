@@ -9,7 +9,8 @@
 #include <catch2/trompeloeil.hpp>
 
 #include <introRL/algorithm.hpp>
-#include <introRL/types.hpp>
+#include <introRL/banditTypes.hpp>
+#include <introRL/basicTypes.hpp>
 
 namespace irl::bandit::algorithm
 {

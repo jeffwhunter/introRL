@@ -4,8 +4,9 @@
 #include <arrayfire.h>
 
 #include "introRL/afUtils.hpp"
+#include "introRL/banditTypes.hpp"
+#include "introRL/basicTypes.hpp"
 #include "introRL/results.hpp"
-#include "introRL/types.hpp"
 
 namespace irl::bandit::results
 {
@@ -52,7 +53,7 @@ namespace irl::bandit::results
         const af::array& newResult,
         ResultVector& resultVector)
     {
-        std::vector<float> hostResult{afu::toHost<float>(newResult)};
+        std::vector<float> hostResult{toVector<float>(newResult)};
         for (auto&& [r, v] : std::views::zip(hostResult, resultVector))
         {
             v.push_back(r);

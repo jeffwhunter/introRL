@@ -2,7 +2,8 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <introRL/environments.hpp>
-#include <introRL/types.hpp>
+#include <introRL/banditTypes.hpp>
+#include <introRL/basicTypes.hpp>
 
 namespace irl::bandit::environments
 {

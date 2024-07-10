@@ -6,7 +6,7 @@
 
 #include <introRL/act.hpp>
 #include <introRL/afUtils.hpp>
-#include <introRL/types.hpp>
+#include <introRL/basicTypes.hpp>
 
 namespace irl::act
 {
@@ -64,11 +64,11 @@ namespace irl::act
                 | std::views::take(nRuns))};
 
         REQUIRE_THAT(
-            afu::toHost<float>(q(eGreedy(q, 0).unwrap<Actions>())),
+            toVector<float>(q(eGreedy(q, 0).unwrap<Actions>())),
             allMax);
 
         REQUIRE_THAT(
-            afu::toHost<float>(q(eGreedy(q, af::constant(0, nRuns)).unwrap<Actions>())),
+            toVector<float>(q(eGreedy(q, af::constant(0, nRuns)).unwrap<Actions>())),
             allMax);
     }
 
@@ -84,7 +84,7 @@ namespace irl::act
             ) % nActions};
 
         REQUIRE_THAT(
-            afu::toHost<float>(q(greedy(q).unwrap<Actions>())),
+            toVector<float>(q(greedy(q).unwrap<Actions>())),
             Catch::Matchers::RangeEquals(
                 std::views::repeat(nActions - 1)
                 | std::views::take(nRuns)));
@@ -109,7 +109,7 @@ namespace irl::act
             ) % nActions) == 0.).as(f32)};
 
         REQUIRE_THAT(
-            afu::toHost<float>(p(choose(p).unwrap<Actions>())),
+            toVector<float>(p(choose(p).unwrap<Actions>())),
             Catch::Matchers::RangeEquals(
                 std::views::repeat(1.)
                 | std::views::take(nRuns)));

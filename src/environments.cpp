@@ -2,7 +2,8 @@
 
 #include "introRL/act.hpp"
 #include "introRL/environments.hpp"
-#include "introRL/types.hpp"
+#include "introRL/banditTypes.hpp"
+#include "introRL/basicTypes.hpp"
 
 namespace irl::bandit::environments
 {
@@ -13,8 +14,8 @@ namespace irl::bandit::environments
 
     Rewards Stationary::reward(const Actions& actions) const
     {
-        return irl::Rewards{
-            af::randn(m_qStar.dims(0), f32) + m_qStar(actions.unwrap<irl::Actions>())};
+        return Rewards{
+            af::randn(m_qStar.dims(0), f32) + m_qStar(actions.unwrap<Actions>())};
     }
 
     Actions Stationary::optimal() const

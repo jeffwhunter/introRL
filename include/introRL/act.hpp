@@ -4,7 +4,7 @@
 
 #include <arrayfire.h>
 
-#include "introRL/types.hpp"
+#include "introRL/basicTypes.hpp"
 
 namespace irl::act
 {

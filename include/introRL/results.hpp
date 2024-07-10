@@ -5,7 +5,8 @@
 #include <arrayfire.h>
 
 #include "introRL/afUtils.hpp"
-#include "introRL/types.hpp"
+#include "introRL/banditTypes.hpp"
+#include "introRL/basicTypes.hpp"
 
 namespace irl::bandit::results
 {
@@ -16,13 +17,12 @@ namespace irl::bandit::results
     {
         using ResultVector = std::vector<std::vector<float>>;
 
-        struct Result
-        {
-            ResultVector rewards;
-            ResultVector optimality;
-        };
+        struct Result;
 
     public:
+        using RewardsResult = ResultVector;
+        using OptimalityResult = ResultVector;
+
         /// <summary>
         /// Creates a RewardsAndOptimality for a specific number of parameters, organized
         /// according to some reduction keys.
@@ -67,6 +67,12 @@ namespace irl::bandit::results
         Result value();
 
     private:
+        struct Result
+        {
+            RewardsResult rewards;
+            OptimalityResult optimality;
+        };
+
         /// <summary>
         /// Creates a vector of vectors appropriate for recording a number of sets of
         /// results.
@@ -86,8 +92,8 @@ namespace irl::bandit::results
             ResultVector& resultVector);
 
         ReductionKeys m_keys;
-        ResultVector m_rewards;
-        ResultVector m_optimality;
+        RewardsResult m_rewards;
+        OptimalityResult m_optimality;
     };
 
     /// <summary>
@@ -154,7 +160,7 @@ namespace irl::bandit::results
         /// <returns>A vector of rewards, one per parameter.</returns>
         std::vector<float> value()
         {
-            return afu::toHost<float>(m_rewards);
+            return toVector<float>(m_rewards);
         }
 
     private:

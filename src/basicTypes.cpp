@@ -1,5 +1,5 @@
 #include "introRL/linear.hpp"
-#include "introRL/types.hpp"
+#include "introRL/basicTypes.hpp"
 
 namespace irl::detail
 {

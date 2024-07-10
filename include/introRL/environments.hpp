@@ -2,7 +2,8 @@
 
 #include <arrayfire.h>
 
-#include "introRL/types.hpp"
+#include "introRL/banditTypes.hpp"
+#include "introRL/basicTypes.hpp"
 
 namespace irl::bandit::environments
 {

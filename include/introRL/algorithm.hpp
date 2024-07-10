@@ -4,52 +4,100 @@
 #include <ranges>
 #include <tuple>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 #include <arrayfire.h>
 
 #include "introRL/afUtils.hpp"
-#include "introRL/types.hpp"
+#include "introRL/banditTypes.hpp"
+#include "introRL/basicTypes.hpp"
 
 namespace irl::bandit::algorithm
 {
     /// <summary>
+    /// Types that are not void.
+    /// </summary>
+    template<class T>
+    concept not_void = !std::is_void_v<T>;
+
+    /// <summary>
+    /// Types that can act as agents in bandit processes.
+    /// </summary>
+    template <class TBanditAgent>
+    concept BanditAgent = requires (
+        TBanditAgent agent,
+        const Actions& actions,
+        const Rewards& rewards)
+    {
+        { agent.act() } -> std::same_as<Actions>;
+        agent.update(actions, rewards);
+    };
+
+    /// <summary>
     /// Types that can be called with DeviceParameters and an ActionCount to create an
     /// agent.
     /// </summary>
-    template <typename TAgentFactory>
-    concept AgentFactory = requires (
-        TAgentFactory factory,
+    template <class TBanditAgentFactory>
+    concept BanditAgentFactory = requires (
+        TBanditAgentFactory factory,
         const DeviceParameters& deviceParameters,
         ActionCount nActions)
     {
-        TAgentFactory{deviceParameters, nActions};
+        TBanditAgentFactory{deviceParameters, nActions};
+    };
+
+    /// <summary>
+    /// Types that can act as environments in bandit processes.
+    /// </summary>
+    template <class TBanditEnvironment>
+    concept BanditEnvironment = requires (
+        TBanditEnvironment environment,
+        const Actions & actions)
+    {
+        { environment.reward(actions) } -> std::same_as<Rewards>;
+        { environment.optimal() } -> std::same_as<Actions>;
+        { environment.update() } -> std::same_as<void>;
     };
 
     /// <summary>
     /// Types that can be called with an ActionCount and a RunCount to create an
     /// environment.
     /// </summary>
-    template <typename TEnvironmentFactory>
-    concept EnvironmentFactory = requires (
-        TEnvironmentFactory factory,
+    template <class TBanditEnvironmentFactory>
+    concept BanditEnvironmentFactory = requires (
+        TBanditEnvironmentFactory factory,
         ActionCount nActions,
         RunCount nRuns)
     {
-        TEnvironmentFactory{nActions, nRuns};
+        TBanditEnvironmentFactory{nActions, nRuns};
+    };
+
+    /// <summary>
+    /// Types that can act as a results in bandit processes.
+    /// </summary>
+    template <class TBanditResult>
+    concept BanditResult = requires (
+        TBanditResult result,
+        const Actions & actions,
+        const Actions & optimal,
+        const Rewards & rewards)
+    {
+        result.update(actions, optimal, rewards);
+        { result.value() } -> not_void;
     };
 
     /// <summary>
     /// Types that can be called with a ParameterCount and some ReductionKeys to create a
     /// result.
     /// </summary>
-    template <typename TResultFactory>
-    concept ResultFactory = requires (
-        TResultFactory factory,
+    template <class TBanditResultFactory>
+    concept BanditResultFactory = requires (
+        TBanditResultFactory factory,
         ParameterCount nParameters,
-        const ReductionKeys & reductionKeys)
+        const ReductionKeys& reductionKeys)
     {
-        TResultFactory{nParameters, reductionKeys};
+        TBanditResultFactory{nParameters, reductionKeys};
     };
 
     /// <summary>
@@ -71,10 +119,10 @@ namespace irl::bandit::algorithm
     /// </param>
     /// <returns>A tuple containing the agent, environment, and result.</returns>
     template <
-        AgentFactory TAgent,
-        EnvironmentFactory TEnvironment,
-        ResultFactory TResult>
-    [[nodiscard]] auto make(
+        BanditAgentFactory TAgent,
+        BanditEnvironmentFactory TEnvironment,
+        BanditResultFactory TResult>
+    [[nodiscard]] decltype(auto) make(
         const std::vector<float>& parameters,
         ActionCount nActions,
         RunsPerParameter runsPerParam)
@@ -87,7 +135,7 @@ namespace irl::bandit::algorithm
         const auto i{af::iota(nRuns.unwrap<RunCount>(), 1, u32)};
         const auto keys{i / uRunsPerParam};
 
-        const auto tiled{af::tile(afu::toArrayFire(parameters), uRunsPerParam)};
+        const auto tiled{af::tile(toArrayFire(parameters), uRunsPerParam)};
         const auto deshuffle{
             ((i % uRunsPerParam) * nParam.unwrap<ParameterCount>()) + keys};
 
@@ -96,52 +144,6 @@ namespace irl::bandit::algorithm
             TEnvironment{nActions, nRuns},
             TResult{nParam, ReductionKeys{keys}});
     }
-
-    /// <summary>
-    /// Types that can act as agents in bandit processes.
-    /// </summary>
-    template <typename TBanditAgent>
-    concept BanditAgent = requires (
-        TBanditAgent agent,
-        const Actions & actions,
-        const Rewards & rewards)
-    {
-        { agent.act() } -> std::same_as<Actions>;
-        agent.update(actions, rewards);
-    };
-
-    /// <summary>
-    /// Types that can act as environments in bandit processes.
-    /// </summary>
-    template <typename TBanditEnvironment>
-    concept BanditEnvironment = requires (
-        TBanditEnvironment environment,
-        const Actions & actions)
-    {
-        { environment.reward(actions) } -> std::same_as<Rewards>;
-        { environment.optimal() } -> std::same_as<Actions>;
-        { environment.update() } -> std::same_as<void>;
-    };
-
-    /// <summary>
-    /// Types that are not void.
-    /// </summary>
-    template<typename T>
-    concept not_void = !std::is_void_v<T>;
-
-    /// <summary>
-    /// Types that can act as a results in bandit processes.
-    /// </summary>
-    template <typename TBanditResult>
-    concept BanditResult = requires (
-        TBanditResult result,
-        const Actions & actions,
-        const Actions & optimal,
-        const Rewards & rewards)
-    {
-        result.update(actions, optimal, rewards);
-        { result.value() } -> not_void;
-    };
 
     /// <summary>
     /// Runs a number of simple bandit algorithms (p.32 Sutton, Barto (2018)) with a
@@ -158,7 +160,7 @@ namespace irl::bandit::algorithm
     /// <param name="nSteps">- The number of steps to run the process for.</param>
     /// <param name="progressCallback">- The callback to call each step.</param>
     /// <returns>The final value calculated by the result.</returns>
-    [[nodiscard]] auto run(
+    [[nodiscard]] decltype(auto) run(
         BanditAgent auto&& agent,
         BanditEnvironment auto&& environment,
         BanditResult auto&& result,
@@ -221,12 +223,12 @@ namespace irl::bandit::algorithm
         /// </param>
         /// <param name="progressCallback">- The callback to call each step.</param>
         /// <returns></returns>
-        template <typename TAgent, typename TEnvironment, typename TResult>
+        template <class TAgent, class TEnvironment, class TResult>
         requires
-            AgentFactory<TAgent> && BanditAgent<TAgent> &&
-            EnvironmentFactory<TEnvironment> && BanditEnvironment<TEnvironment> &&
-            ResultFactory<TResult> && BanditResult<TResult>
-        [[nodiscard]] auto learn(
+            BanditAgentFactory<TAgent> && BanditAgent<TAgent> &&
+            BanditEnvironmentFactory<TEnvironment> && BanditEnvironment<TEnvironment> &&
+            BanditResultFactory<TResult> && BanditResult<TResult>
+        [[nodiscard]] decltype(auto) learn(
             const std::vector<float>& parameters,
             std::function<void(void)> progressCallback
         ) const

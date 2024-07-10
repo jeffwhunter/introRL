@@ -12,7 +12,7 @@ namespace irl::linear
     TEST_CASE("linear.index.linearizes indices")
     {
         REQUIRE_THAT(
-            afu::toHost<unsigned>(index(af::array{0u, 2u, 4u})),
+            toVector<unsigned>(index(af::array{0u, 2u, 4u})),
             Catch::Matchers::RangeEquals(std::vector<unsigned>{0, 7, 14}));
     }
 }

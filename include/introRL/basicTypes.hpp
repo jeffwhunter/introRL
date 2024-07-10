@@ -19,12 +19,12 @@ namespace irl
     }
 
     /// <summary>
-    /// A skill that ensures two objects of some type can be equated to produce an
+    /// A skill that ensures two objects can use operators that produce arrayfire arrays.
     /// af::array.
     /// </summary>
-    /// <typeparam name="StronkT"></typeparam>
+    /// <typeparam name="StronkT">The type of objects to operate on.</typeparam>
     template <typename StronkT>
-    struct can_arrayfire_equate
+    struct AFOperators
     {
         /// <summary>
         /// Equates two objects in some way that produces an af::array.
@@ -38,6 +38,40 @@ namespace irl
             static_assert(!std::is_floating_point_v<typename StronkT::underlying_type>);
             return lhs.template unwrap<StronkT>() == rhs.template unwrap<StronkT>();
         }
+
+        /// <summary>
+        /// Discerns two objects in some way that produces an af::array.
+        /// </summary>
+        /// <param name="lhs">The left hand side of the discernment.</param>
+        /// <param name="rhs">The right hand side of the discernment.</param>
+        /// <returns>An af::array representing how equal the two sides are.</returns>
+        constexpr friend auto operator!=(const StronkT& lhs, const StronkT& rhs) noexcept
+            -> af::array
+        {
+            static_assert(!std::is_floating_point_v<typename StronkT::underlying_type>);
+            return lhs.template unwrap<StronkT>() != rhs.template unwrap<StronkT>();
+        }
+
+        /// <summary>
+        /// Subtracts two objects in some way that produces an af::array.
+        /// </summary>
+        /// <param name="lhs">The left hand side of the subtraction.</param>
+        /// <param name="rhs">The right hand side of the subtraction.</param>
+        /// <returns>An af::array representing how different the two sides are.</returns>
+        constexpr friend auto operator-(const StronkT& lhs, const StronkT& rhs) noexcept
+            -> af::array
+        {
+            static_assert(!std::is_floating_point_v<typename StronkT::underlying_type>);
+            return lhs.template unwrap<StronkT>() - rhs.template unwrap<StronkT>();
+        }
+    };
+
+    /// <summary>
+    /// The number of actions available in some learning process.
+    /// </summary>
+    struct ActionCount : twig::stronk_default_unit<ActionCount, unsigned>
+    {
+        using stronk_default_unit::stronk_default_unit;
     };
 
     /// <summary>
@@ -46,24 +80,32 @@ namespace irl
     struct Actions : twig::stronk<
         Actions,
         detail::ActionsModel,
-        can_arrayfire_equate,
+        AFOperators,
         twig::can_forward_constructor_args>
     {
         using stronk::stronk;
     };
 
     /// <summary>
-    /// The number of actions available in some parallel learning process.
+    /// The size of some dimension in a tensor.
     /// </summary>
-    struct ActionCount : twig::stronk_default_unit<ActionCount, unsigned>
+    struct Extent : twig::stronk<Extent, unsigned>
     {
-        using stronk_default_unit::stronk_default_unit;
+        using stronk::stronk;
     };
 
     /// <summary>
-    /// An array of input parameters, one per agent.
+    /// The index of some sequential data.
     /// </summary>
-    struct DeviceParameters : twig::stronk<DeviceParameters, af::array>
+    struct Index : twig::stronk<Index, unsigned>
+    {
+        using stronk::stronk;
+    };
+
+    /// <summary>
+    /// The axis along which some data is indexed.
+    /// </summary>
+    struct IndexAxis : twig::stronk<IndexAxis, unsigned>
     {
         using stronk::stronk;
     };
@@ -77,6 +119,14 @@ namespace irl
     };
 
     /// <summary>
+    /// The rank of a tensor.
+    /// </summary>
+    struct Rank : twig::stronk<Rank, unsigned>
+    {
+        using stronk::stronk;
+    };
+
+    /// <summary>
     /// An array of values, one per agent, where adjacent equal elements imply the input
     /// parameters at those indices have been duplicated from the same original.
     /// </summary>
@@ -86,17 +136,17 @@ namespace irl
     };
 
     /// <summary>
-    /// An array of rewards, one per agent.
-    /// </summary>
-    struct Rewards : twig::stronk<Rewards, af::array>
-    {
-        using stronk::stronk;
-    };
-
-    /// <summary>
     /// The total number of runs in some parallel learning process.
     /// </summary>
     struct RunCount : twig::stronk_default_unit<RunCount, unsigned>
+    {
+        using stronk_default_unit::stronk_default_unit;
+    };
+
+    /// <summary>
+    /// The number of states available in some learning process.
+    /// </summary>
+    struct StateCount : twig::stronk_default_unit<StateCount, unsigned>
     {
         using stronk_default_unit::stronk_default_unit;
     };
