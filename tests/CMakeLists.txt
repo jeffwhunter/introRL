@@ -9,8 +9,9 @@ set(
     algorithmTest.cpp
     cartesianTest.cpp
     environmentsTest.cpp
-    policyTest.cpp
+    iterationTest.cpp
     linearTest.cpp
+    mathTest.cpp
     reduceTest.cpp
     resultsTest.cpp
     statsTest.cpp)

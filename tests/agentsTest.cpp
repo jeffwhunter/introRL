@@ -21,7 +21,7 @@ namespace irl::bandit::agents
                 DeviceParameters{af::constant(0, nRuns)},
                 ActionCount{nActions}};
 
-            REQUIRE(testee.act().unwrap<Actions>().dims() == af::dim4{nRuns});
+            REQUIRE(testee.act().unwrap<LinearActions>().dims() == af::dim4{nRuns});
         }
     }
 
@@ -36,11 +36,11 @@ namespace irl::bandit::agents
             DeviceParameters{af::constant(0, nRuns)},
             ActionCount{nActions}};
 
-        testee.update(Actions{actionIndices}, Rewards{af::constant(1, nRuns)});
+        testee.update(LinearActions{actionIndices}, Rewards{af::constant(1, nRuns)});
 
         REQUIRE(
             af::allTrue<bool>(
-                testee.act().unwrap<Actions>() ==
+                testee.act().unwrap<LinearActions>() ==
                 linear::index(actionIndices)));
     }
 
@@ -56,7 +56,7 @@ namespace irl::bandit::agents
                 DeviceParameters{af::constant(0, nRuns)},
                 ActionCount{nActions}};
 
-            REQUIRE(testee.act().unwrap<Actions>().dims() == af::dim4{nRuns});
+            REQUIRE(testee.act().unwrap<LinearActions>().dims() == af::dim4{nRuns});
         }
     }
 
@@ -72,11 +72,11 @@ namespace irl::bandit::agents
             DeviceParameters{af::constant(0, nRuns)},
             ActionCount{nActions}};
 
-        testee.update(Actions{actionIndices}, Rewards{af::constant(1, nRuns)});
+        testee.update(LinearActions{actionIndices}, Rewards{af::constant(1, nRuns)});
 
         REQUIRE(
             af::allTrue<bool>(
-                testee.act().unwrap<Actions>() ==
+                testee.act().unwrap<LinearActions>() ==
                 linear::index(actionIndices)));
     }
 
@@ -92,11 +92,11 @@ namespace irl::bandit::agents
             DeviceParameters{af::constant(0, nRuns)},
             ActionCount{nActions}};
 
-        testee.update(Actions{actionIndices}, Rewards{af::constant(1, nRuns)});
+        testee.update(LinearActions{actionIndices}, Rewards{af::constant(1, nRuns)});
 
         REQUIRE(
             !af::allTrue<bool>(
-                testee.act().unwrap<Actions>() ==
+                testee.act().unwrap<LinearActions>() ==
                 linear::index(actionIndices)));
     }
 
@@ -112,7 +112,7 @@ namespace irl::bandit::agents
                 DeviceParameters{af::constant(0, nRuns)},
                 ActionCount{nActions}};
 
-            REQUIRE(testee.act().unwrap<Actions>().dims() == af::dim4{nRuns});
+            REQUIRE(testee.act().unwrap<LinearActions>().dims() == af::dim4{nRuns});
         }
     }
 
@@ -128,11 +128,11 @@ namespace irl::bandit::agents
             DeviceParameters{af::constant(0, nRuns)},
             ActionCount{nActions}};
 
-        testee.update(Actions{actionIndices}, Rewards{af::constant(1, nRuns)});
+        testee.update(LinearActions{actionIndices}, Rewards{af::constant(1, nRuns)});
 
         REQUIRE(
             af::allTrue<bool>(
-                testee.act().unwrap<Actions>() ==
+                testee.act().unwrap<LinearActions>() ==
                 linear::index(actionIndices)));
     }
 
@@ -148,11 +148,11 @@ namespace irl::bandit::agents
             DeviceParameters{af::constant(0, nRuns)},
             ActionCount{nActions}};
 
-        testee.update(Actions{actionIndices}, Rewards{af::constant(1, nRuns)});
+        testee.update(LinearActions{actionIndices}, Rewards{af::constant(1, nRuns)});
 
         REQUIRE(
             !af::allTrue<bool>(
-                testee.act().unwrap<Actions>() ==
+                testee.act().unwrap<LinearActions>() ==
                 linear::index(actionIndices)));
     }
 
@@ -169,11 +169,11 @@ namespace irl::bandit::agents
             DeviceParameters{af::constant(optimism, nRuns)},
             ActionCount{nActions}};
 
-        testee.update(Actions{actionIndices}, Rewards{af::constant(1, nRuns)});
+        testee.update(LinearActions{actionIndices}, Rewards{af::constant(1, nRuns)});
 
         REQUIRE(
             !af::allTrue<bool>(
-                testee.act().unwrap<Actions>() ==
+                testee.act().unwrap<LinearActions>() ==
                 linear::index(actionIndices)));
     }
 
@@ -188,7 +188,7 @@ namespace irl::bandit::agents
                 DeviceParameters{af::constant(0, nRuns)},
                 ActionCount{nActions}};
 
-            REQUIRE(testee.act().unwrap<Actions>().dims() == af::dim4{nRuns});
+            REQUIRE(testee.act().unwrap<LinearActions>().dims() == af::dim4{nRuns});
         }
     }
 
@@ -203,11 +203,11 @@ namespace irl::bandit::agents
             DeviceParameters{af::constant(0, nRuns)},
             ActionCount{nActions}};
 
-        testee.update(Actions{actionIndices}, Rewards{af::constant(1, nRuns)});
+        testee.update(LinearActions{actionIndices}, Rewards{af::constant(1, nRuns)});
 
         REQUIRE(
             af::allTrue<bool>(
-                testee.act().unwrap<Actions>() ==
+                testee.act().unwrap<LinearActions>() ==
                 linear::index(actionIndices)));
     }
 
@@ -223,11 +223,11 @@ namespace irl::bandit::agents
             DeviceParameters{af::constant(cee, nRuns)},
             ActionCount{nActions}};
 
-        testee.update(Actions{actionIndices}, Rewards{af::constant(1, nRuns)});
+        testee.update(LinearActions{actionIndices}, Rewards{af::constant(1, nRuns)});
 
         REQUIRE(
             !af::allTrue<bool>(
-                testee.act().unwrap<Actions>() ==
+                testee.act().unwrap<LinearActions>() ==
                 linear::index(actionIndices)));
     }
 
@@ -242,7 +242,7 @@ namespace irl::bandit::agents
                 DeviceParameters{af::constant(0, nRuns)},
                 ActionCount{nActions}};
 
-            REQUIRE(testee.act().unwrap<Actions>().dims() == af::dim4{nRuns});
+            REQUIRE(testee.act().unwrap<LinearActions>().dims() == af::dim4{nRuns});
         }
     }
 
@@ -259,11 +259,12 @@ namespace irl::bandit::agents
             DeviceParameters{af::constant(alpha, nRuns)},
             ActionCount{nActions}};
 
-        testee.update(Actions{actionIndices}, Rewards{af::constant(reward, nRuns)});
+        testee.update(
+            LinearActions{actionIndices}, Rewards{af::constant(reward, nRuns)});
 
         REQUIRE(
             !af::allTrue<bool>(
-                testee.act().unwrap<Actions>() ==
+                testee.act().unwrap<LinearActions>() ==
                 linear::index(actionIndices)));
     }
 
@@ -280,7 +281,7 @@ namespace irl::bandit::agents
             DeviceParameters{af::constant(alpha, nRuns)},
             ActionCount{nActions}};
 
-        const Actions actions{actionIndices};
+        const LinearActions actions{actionIndices};
         const Rewards rewards{af::constant(reward, nRuns)};
 
         testee.update(actions, rewards);
@@ -288,7 +289,7 @@ namespace irl::bandit::agents
 
         REQUIRE(
             !af::allTrue<bool>(
-                testee.act().unwrap<Actions>() ==
+                testee.act().unwrap<LinearActions>() ==
                 linear::index(actionIndices)));
     }
 
@@ -305,14 +306,14 @@ namespace irl::bandit::agents
             DeviceParameters{af::constant(alpha, nRuns)},
             ActionCount{nActions}};
 
-        const Actions actions{actionIndices};
+        const LinearActions actions{actionIndices};
 
         testee.update(actions, Rewards{af::constant(0, nRuns)});
         testee.update(actions, Rewards{af::constant(reward, nRuns)});
 
         REQUIRE(
             af::allTrue<bool>(
-                testee.act().unwrap<Actions>() ==
+                testee.act().unwrap<LinearActions>() ==
                 linear::index(actionIndices)));
     }
 }

@@ -11,9 +11,9 @@
 
 #include <introRL/agents.hpp>
 #include <introRL/algorithm.hpp>
-#include <introRL/charts.hpp>
 #include <introRL/environments.hpp>
 #include <introRL/results.hpp>
+#include <introRL/subplotters.hpp>
 
 using namespace indicators::option;
 using namespace irl;
@@ -21,7 +21,7 @@ using namespace irl::bandit;
 using namespace irl::bandit::agents;
 using namespace irl::bandit::algorithm;
 using namespace irl::bandit::environments;
-using namespace irl::charts;
+using namespace irl::subplotters;
 
 constexpr unsigned FIGURE_WIDTH{1'000};
 constexpr unsigned FIGURE_HEIGHT{500};

@@ -40,7 +40,7 @@ namespace irl::bandit::agents
         /// some probability.
         /// </summary>
         /// <returns>An array of selected actions, one per agent.</returns>
-        Actions act() const
+        LinearActions act() const
         {
             return act::eGreedy(m_q, m_e);
         }
@@ -56,9 +56,9 @@ namespace irl::bandit::agents
         /// - An array of floats, one per agent, with the rewards that resulted from the
         /// last chosen actions.
         /// </param>
-        void update(const Actions& actions, const Rewards& rewards)
+        void update(const LinearActions& actions, const Rewards& rewards)
         {
-            const auto a{actions.unwrap<Actions>()};
+            const auto a{actions.unwrap<LinearActions>()};
 
             m_n(a) += 1;
 
@@ -103,7 +103,7 @@ namespace irl::bandit::agents
         /// some probability.
         /// </summary>
         /// <returns>An array of selected actions, one per agent.</returns>
-        Actions act() const
+        LinearActions act() const
         {
             return act::eGreedy(m_q, m_e);
         }
@@ -119,9 +119,9 @@ namespace irl::bandit::agents
         /// - An array of floats, one per agent, with the rewards that resulted from the
         /// last chosen actions.
         /// </param>
-        void update(const Actions& actions, const Rewards& rewards)
+        void update(const LinearActions& actions, const Rewards& rewards)
         {
-            const auto a{actions.unwrap<Actions>()};
+            const auto a{actions.unwrap<LinearActions>()};
 
             auto increment{(rewards.unwrap<Rewards>() - m_q(a)) * STEP_SIZE};
             m_q(a) += increment;
@@ -166,7 +166,7 @@ namespace irl::bandit::agents
         /// Returns the actions with the best action value estimates.
         /// </summary>
         /// <returns>An array of selected actions, one per agent.</returns>
-        Actions act() const
+        LinearActions act() const
         {
             return act::greedy(m_q);
         }
@@ -182,9 +182,9 @@ namespace irl::bandit::agents
         /// - An array of floats, one per agent, with the rewards that resulted from the
         /// last chosen actions.
         /// </param>
-        void update(const Actions& actions, const Rewards& rewards)
+        void update(const LinearActions& actions, const Rewards& rewards)
         {
-            const auto a{actions.unwrap<Actions>()};
+            const auto a{actions.unwrap<LinearActions>()};
 
             auto increment{(rewards.unwrap<Rewards>() - m_q(a)) * STEP_SIZE};
             m_q(a) += increment;
@@ -225,7 +225,7 @@ namespace irl::bandit::agents
         /// uncertainty in each action.
         /// </summary>
         /// <returns>An array of selected actions, one per agent.</returns>
-        Actions act() const
+        LinearActions act() const
         {
             return act::greedy(m_q + mod(m_t));
         }
@@ -241,9 +241,9 @@ namespace irl::bandit::agents
         /// - An array of floats, one per agent, with the rewards that resulted from the
         /// last chosen actions.
         /// </param>
-        void update(const Actions& actions, const Rewards& rewards)
+        void update(const LinearActions& actions, const Rewards& rewards)
         {
-            const auto a{actions.unwrap<Actions>()};
+            const auto a{actions.unwrap<LinearActions>()};
 
             m_n(a) += 1;
 
@@ -302,7 +302,7 @@ namespace irl::bandit::agents
         /// Selects randomly from actions, preferring those with higher preferences.
         /// </summary>
         /// <returns>An array of selected actions, one per agent.</returns>
-        Actions act() const
+        LinearActions act() const
         {
             return act::choose(pi());
         }
@@ -317,7 +317,7 @@ namespace irl::bandit::agents
         /// - An array of floats, one per agent, with the rewards that resulted from the
         /// last chosen actions.
         /// </param>
-        void update(const Actions& actions, const Rewards& rewards)
+        void update(const LinearActions& actions, const Rewards& rewards)
         {
             const auto r{rewards.unwrap<Rewards>()};
 
@@ -325,7 +325,7 @@ namespace irl::bandit::agents
             m_rBar += rDiff / ++m_t;
 
             auto oneHot{af::constant(0, m_h.dims(), u8)};
-            oneHot(actions.unwrap<Actions>()) = 1;
+            oneHot(actions.unwrap<LinearActions>()) = 1;
 
             auto increment{m_alphas * (r - m_rBar) * (oneHot - pi())};
             m_h += increment;

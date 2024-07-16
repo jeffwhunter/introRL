@@ -34,13 +34,13 @@ namespace irl::bandit::environments
         /// <returns>
         /// The reward earned from each agent pulling their chosen slot machines.
         /// </returns>
-        Rewards reward(const Actions& actions) const;
+        Rewards reward(const LinearActions& actions) const;
 
         /// <summary>
         /// The optimal actions to pick for each agent.
         /// </summary>
         /// <returns>An array of optimal actions, one per agent.</returns>
-        Actions optimal() const;
+        LinearActions optimal() const;
 
         /// <summary>
         /// Does nothing at all.

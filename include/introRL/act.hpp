@@ -14,7 +14,7 @@ namespace irl::act
     /// <param name="nRuns">- The number of agents to generate actions for.</param>
     /// <param name="nActions">- The number of actions available to each agent.</param>
     /// <returns>An array of uniformly sampled actions, one per agent.</returns>
-    Actions explore(RunCount nRuns, ActionCount nActions);
+    LinearActions explore(RunCount nRuns, ActionCount nActions);
 
     /// <summary>
     /// Pick the best actions given some action value table q with ties randomly broken.
@@ -24,7 +24,7 @@ namespace irl::act
     /// each agent.
     /// </param>
     /// <returns>An array of the highest value actions available to each agent.</returns>
-    Actions greedy(const af::array& q);
+    LinearActions greedy(const af::array& q);
 
     /// <summary>
     /// Types that produce an af::array when on the right hand side of > from another
@@ -50,13 +50,16 @@ namespace irl::act
     /// An array of one action per agent, either exploratory or greedy according to
     /// epsilon.
     /// </returns>
-    Actions eGreedy(const af::array& q, arrayComparable auto epsilon)
+    LinearActions eGreedy(const af::array& q, arrayComparable auto epsilon)
     {
-        return Actions(
+        return LinearActions(
             af::select(
                 af::randu(q.dims(0), f32) > epsilon,
-                greedy(q).unwrap<Actions>(),
-                explore(RunCount{q.dims(0)}, ActionCount{q.dims(1)}).unwrap<Actions>()),
+                greedy(q).unwrap<LinearActions>(),
+                explore(
+                    RunCount{q.dims(0)},
+                    ActionCount{q.dims(1)}
+                ).unwrap<LinearActions>()),
             false);
     }
 
@@ -66,5 +69,5 @@ namespace irl::act
     /// <param name="p">- A matrix of shape (agents, actions) holding the probability
     /// that each agent will select each action. Rows of p must sum to 1.</param>
     /// <returns>An array of one action per agent, drawn from p.</returns>
-    Actions choose(const af::array& p);
+    LinearActions choose(const af::array& p);
 }

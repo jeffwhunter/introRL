@@ -27,10 +27,10 @@ namespace irl::bandit::algorithm
     template <class TBanditAgent>
     concept BanditAgent = requires (
         TBanditAgent agent,
-        const Actions& actions,
+        const LinearActions& actions,
         const Rewards& rewards)
     {
-        { agent.act() } -> std::same_as<Actions>;
+        { agent.act() } -> std::same_as<LinearActions>;
         agent.update(actions, rewards);
     };
 
@@ -53,10 +53,10 @@ namespace irl::bandit::algorithm
     template <class TBanditEnvironment>
     concept BanditEnvironment = requires (
         TBanditEnvironment environment,
-        const Actions & actions)
+        const LinearActions& actions)
     {
         { environment.reward(actions) } -> std::same_as<Rewards>;
-        { environment.optimal() } -> std::same_as<Actions>;
+        { environment.optimal() } -> std::same_as<LinearActions>;
         { environment.update() } -> std::same_as<void>;
     };
 
@@ -79,9 +79,9 @@ namespace irl::bandit::algorithm
     template <class TBanditResult>
     concept BanditResult = requires (
         TBanditResult result,
-        const Actions & actions,
-        const Actions & optimal,
-        const Rewards & rewards)
+        const LinearActions& actions,
+        const LinearActions& optimal,
+        const Rewards& rewards)
     {
         result.update(actions, optimal, rewards);
         { result.value() } -> not_void;

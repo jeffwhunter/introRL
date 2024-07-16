@@ -5,8 +5,16 @@
 
 #include "introRL/basicTypes.hpp"
 
-namespace irl::policy
+namespace irl::iteration
 {
+    /// <summary>
+    /// An array of action indices.
+    /// </summary>
+    struct ActionIndices : twig::stronk<ActionIndices, af::array>
+    {
+        using stronk::stronk;
+    };
+
     /// <summary>
     /// An array of action indices, one per state, which represent each action to
     /// take in each state.

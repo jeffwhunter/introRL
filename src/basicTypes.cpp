@@ -3,7 +3,10 @@
 
 namespace irl::detail
 {
-    ActionsModel::ActionsModel(const af::array& columnIndices, bool linearize)
-        : af::array{linearize ? irl::linear::index(columnIndices) : columnIndices}
+    LinearActionsModel::LinearActionsModel(
+        const af::array& columnIndices,
+        bool linearize
+    ) :
+        af::array{linearize ? irl::linear::index(columnIndices) : columnIndices}
     {}
 }

@@ -14,7 +14,9 @@ namespace irl::bandit::environments
         Stationary testee{ActionCount{10}, RunCount{nRuns}};
 
         REQUIRE(
-            testee.reward(Actions{af::constant(0, nRuns)}).unwrap<Rewards>().dims() ==
+            testee.reward(
+                LinearActions{af::constant(0, nRuns)}
+            ).unwrap<Rewards>().dims() ==
             af::dim4{nRuns});
     }
 
@@ -25,7 +27,9 @@ namespace irl::bandit::environments
         Stationary testee{ActionCount{10}, RunCount{nRuns}};
 
         REQUIRE(
-            testee.reward(Actions{af::constant(0, nRuns)}).unwrap<Rewards>().type() ==
+            testee.reward(
+                LinearActions{af::constant(0, nRuns)}
+            ).unwrap<Rewards>().type() ==
             f32);
     }
 
@@ -35,7 +39,7 @@ namespace irl::bandit::environments
 
         Stationary testee{ActionCount{10}, RunCount{nRuns}};
 
-        REQUIRE(testee.optimal().unwrap<Actions>().dims() == af::dim4{nRuns});
+        REQUIRE(testee.optimal().unwrap<LinearActions>().dims() == af::dim4{nRuns});
     }
 
     TEST_CASE("bandit.environments.Stationary.optimal has the proper type")
@@ -44,7 +48,7 @@ namespace irl::bandit::environments
 
         Stationary testee{ActionCount{10}, RunCount{nRuns}};
 
-        REQUIRE(testee.optimal().unwrap<Actions>().type() == u32);
+        REQUIRE(testee.optimal().unwrap<LinearActions>().type() == u32);
     }
 
     TEST_CASE("bandit.environments.Walking.update changes optimal")
@@ -54,9 +58,9 @@ namespace irl::bandit::environments
 
         Walking<stepSize> testee{ActionCount{10}, RunCount{nRuns}};
 
-        const auto former{testee.optimal().unwrap<Actions>()};
+        const auto former{testee.optimal().unwrap<LinearActions>()};
         testee.update();
-        const auto latter{testee.optimal().unwrap<Actions>()};
+        const auto latter{testee.optimal().unwrap<LinearActions>()};
 
         REQUIRE(!af::allTrue<bool>(former == latter));
     }

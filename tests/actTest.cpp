@@ -14,37 +14,40 @@ namespace irl::act
     TEST_CASE("act.explore.has the proper shape")
     {
         REQUIRE(
-            explore(RunCount{5}, ActionCount{7}).unwrap<Actions>().dims() ==
+            explore(RunCount{5}, ActionCount{7}).unwrap<LinearActions>().dims() ==
             af::dim4{5});
     }
 
     TEST_CASE("act.explore.has the proper type")
     {
-        REQUIRE(explore(RunCount{2}, ActionCount{3}).unwrap<Actions>().type() == u32);
+        REQUIRE(
+            explore(RunCount{2}, ActionCount{3}).unwrap<LinearActions>().type() == u32);
     }
 
     TEST_CASE("act.eGreedy.has the proper shape")
     {
         REQUIRE(
-            eGreedy(af::constant(0, 4, 8, f32), 0).unwrap<Actions>().dims() ==
+            eGreedy(af::constant(0, 4, 8, f32), 0).unwrap<LinearActions>().dims() ==
             af::dim4{4});
 
         REQUIRE(
             eGreedy(
                 af::constant(0, 4, 8, f32),
                 af::array{0, 0, 0, 0}
-            ).unwrap<Actions>().dims() == af::dim4{4});
+            ).unwrap<LinearActions>().dims() == af::dim4{4});
     }
 
     TEST_CASE("act.eGreedy.has the proper type")
     {
-        REQUIRE(eGreedy(af::constant(0, 4, 8, f32), 0).unwrap<Actions>().type() == u32);
+        REQUIRE(
+            eGreedy(af::constant(0, 4, 8, f32), 0).unwrap<LinearActions>().type() ==
+            u32);
 
         REQUIRE(
             eGreedy(
                 af::constant(0, 4, 8, f32),
                 af::array{0, 0, 0, 0}
-            ).unwrap<Actions>().type() == u32);
+            ).unwrap<LinearActions>().type() == u32);
     }
 
     TEST_CASE("act.eGreedy.is greedy when epsilon is zero")
@@ -64,11 +67,12 @@ namespace irl::act
                 | std::views::take(nRuns))};
 
         REQUIRE_THAT(
-            toVector<float>(q(eGreedy(q, 0).unwrap<Actions>())),
+            toVector<float>(q(eGreedy(q, 0).unwrap<LinearActions>())),
             allMax);
 
         REQUIRE_THAT(
-            toVector<float>(q(eGreedy(q, af::constant(0, nRuns)).unwrap<Actions>())),
+            toVector<float>(
+                q(eGreedy(q, af::constant(0, nRuns)).unwrap<LinearActions>())),
             allMax);
     }
 
@@ -84,7 +88,7 @@ namespace irl::act
             ) % nActions};
 
         REQUIRE_THAT(
-            toVector<float>(q(greedy(q).unwrap<Actions>())),
+            toVector<float>(q(greedy(q).unwrap<LinearActions>())),
             Catch::Matchers::RangeEquals(
                 std::views::repeat(nActions - 1)
                 | std::views::take(nRuns)));
@@ -93,7 +97,9 @@ namespace irl::act
     TEST_CASE("act.greedy.probably breaks ties")
     {
         REQUIRE(
-            af::setUnique(greedy(af::constant(0, 10, 10)).unwrap<Actions>()).dims(0) >
+            af::setUnique(
+                greedy(af::constant(0, 10, 10)).unwrap<LinearActions>()
+            ).dims(0) >
             1);
     }
 
@@ -109,7 +115,7 @@ namespace irl::act
             ) % nActions) == 0.).as(f32)};
 
         REQUIRE_THAT(
-            toVector<float>(p(choose(p).unwrap<Actions>())),
+            toVector<float>(p(choose(p).unwrap<LinearActions>())),
             Catch::Matchers::RangeEquals(
                 std::views::repeat(1.)
                 | std::views::take(nRuns)));
@@ -118,19 +124,22 @@ namespace irl::act
     TEST_CASE("act.choose.probably breaks ties")
     {
         REQUIRE(
-            af::setUnique(choose(af::constant(0, 10, 10)).unwrap<Actions>()).dims(0) >
+            af::setUnique(
+                choose(af::constant(0, 10, 10)).unwrap<LinearActions>()
+            ).dims(0) >
             1);
     }
 
     TEST_CASE("act.choose.has the proper shape")
     {
         REQUIRE(
-            choose(af::constant(0, 4, 8, f32)).unwrap<Actions>().dims() ==
+            choose(af::constant(0, 4, 8, f32)).unwrap<LinearActions>().dims() ==
             af::dim4{4});
     }
 
     TEST_CASE("act.choose.has the proper type")
     {
-        REQUIRE(choose(af::constant(0, 4, 8, f32)).unwrap<Actions>().type() == u32);
+        REQUIRE(
+            choose(af::constant(0, 4, 8, f32)).unwrap<LinearActions>().type() == u32);
     }
 }

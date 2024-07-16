@@ -12,13 +12,13 @@ namespace irl::bandit::environments
             af::randn(nRuns.unwrap<RunCount>(), nActions.unwrap<ActionCount>(), f32)}
     {}
 
-    Rewards Stationary::reward(const Actions& actions) const
+    Rewards Stationary::reward(const LinearActions& actions) const
     {
         return Rewards{
-            af::randn(m_qStar.dims(0), f32) + m_qStar(actions.unwrap<Actions>())};
+            af::randn(m_qStar.dims(0), f32) + m_qStar(actions.unwrap<LinearActions>())};
     }
 
-    Actions Stationary::optimal() const
+    LinearActions Stationary::optimal() const
     {
         return act::greedy(m_qStar);
     }

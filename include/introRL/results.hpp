@@ -53,8 +53,8 @@ namespace irl::bandit::results
         /// - An array of the most recent rewards, one per agent.
         /// </param>
         void update(
-            const Actions& actions,
-            const Actions& optimalActions,
+            const LinearActions& actions,
+            const LinearActions& optimalActions,
             const Rewards& rewards);
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace irl::bandit::results
         /// <param name="rewards">
         /// - An array of the most recent rewards, one per agent.
         /// </param>
-        void update(const Actions&, const Actions&, const Rewards& rewards)
+        void update(const LinearActions&, const LinearActions&, const Rewards& rewards)
         {
             if (m_t++ < START_MEASURE_STEP)
             {

@@ -16,13 +16,13 @@ namespace irl::bandit::results
         RewardsAndOptimality testee{ParameterCount{4}, ReductionKeys{keys}};
 
         testee.update(
-            Actions{af::array{0u, 0u, 0u, 1u, 1u, 0u, 1u, 1u}},
-            Actions{af::constant(1u, keys.dims(0))},
+            LinearActions{af::array{0u, 0u, 0u, 1u, 1u, 0u, 1u, 1u}},
+            LinearActions{af::constant(1u, keys.dims(0))},
             Rewards{af::array{0.f, 0.f, 0.f, 2.f, 3.f, 0.f, 4.f, 5.f}});
 
         testee.update(
-            Actions{af::constant(1u, keys.dims(0))},
-            Actions{af::constant(1u, keys.dims(0))},
+            LinearActions{af::constant(1u, keys.dims(0))},
+            LinearActions{af::constant(1u, keys.dims(0))},
             Rewards{af::array{0.f, 0.f, -2.f, 0.f, 0.f, -30.f, -9.f, 9.f}});
 
         auto&& [rewards, optimality]{testee.value()};
@@ -67,13 +67,13 @@ namespace irl::bandit::results
         RollingRewards<0u> testee{ParameterCount{4}, ReductionKeys{keys}};
 
         testee.update(
-            Actions{af::array{0u}},
-            Actions{af::array{0u}},
+            LinearActions{af::array{0u}},
+            LinearActions{af::array{0u}},
             Rewards{af::array{0.f, 0.f, 0.f, 2.f, 3.f, 0.f, 4.f, 5.f}});
 
         testee.update(
-            Actions{af::array{0u}},
-            Actions{af::array{0u}},
+            LinearActions{af::array{0u}},
+            LinearActions{af::array{0u}},
             Rewards{af::array{0.f, 0.f, -2.f, 0.f, 0.f, -30.f, -9.f, 9.f}});
 
         REQUIRE_THAT(
@@ -88,13 +88,13 @@ namespace irl::bandit::results
         RollingRewards<1u> testee{ParameterCount{4}, ReductionKeys{keys}};
 
         testee.update(
-            Actions{af::array{0u}},
-            Actions{af::array{0u}},
+            LinearActions{af::array{0u}},
+            LinearActions{af::array{0u}},
             Rewards{af::array{0.f, 0.f, 0.f, 2.f, 3.f, 0.f, 4.f, 5.f}});
 
         testee.update(
-            Actions{af::array{0u}},
-            Actions{af::array{0u}},
+            LinearActions{af::array{0u}},
+            LinearActions{af::array{0u}},
             Rewards{af::array{0.f, 0.f, -2.f, 0.f, 0.f, -30.f, -9.f, 9.f}});
 
         REQUIRE_THAT(

@@ -7,13 +7,13 @@
 
 namespace irl::act
 {
-    Actions explore(RunCount nRuns, ActionCount nActions)
+    LinearActions explore(RunCount nRuns, ActionCount nActions)
     {
-        return Actions{
+        return LinearActions{
             af::randu(nRuns.unwrap<RunCount>(), u32) % nActions.unwrap<ActionCount>()};
     }
 
-    Actions greedy(const af::array& q)
+    LinearActions greedy(const af::array& q)
     {
         auto nActions{q.dims(1)};
 
@@ -22,7 +22,7 @@ namespace irl::act
         return choose(isMax.as(f32) / af::tile(af::sum(isMax, 1), 1, nActions));
     }
 
-    Actions choose(const af::array& p)
+    LinearActions choose(const af::array& p)
     {
         auto roll{af::randu(p.dims(0), f32)};
         auto choice{af::constant(0u, p.dims(0), u32)};
@@ -34,6 +34,6 @@ namespace irl::act
             roll -= pC;
         }
 
-        return Actions{choice};
+        return LinearActions{choice};
     }
 }

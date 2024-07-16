@@ -14,15 +14,15 @@
 #include "introRL/afUtils.hpp"
 #include "introRL/basicTypes.hpp"
 #include "introRL/cartesian.hpp"
-#include "introRL/charts.hpp"
-#include "introRL/policy.hpp"
-#include "introRL/policyTypes.hpp"
+#include "introRL/iteration.hpp"
+#include "introRL/iterationTypes.hpp"
 #include "introRL/stats.hpp"
+#include "introRL/subplotters.hpp"
 
 using namespace indicators::option;
 using namespace irl;
-using namespace irl::charts;
-using namespace irl::policy;
+using namespace irl::iteration;
+using namespace irl::subplotters;
 
 constexpr unsigned FIGURE_WIDTH{1'500};
 constexpr unsigned FIGURE_HEIGHT{750};
@@ -67,11 +67,6 @@ af::array totalPoisson(
     }
 
     return result;
-}
-
-af::array at(const af::array& m, const af::array& i)
-{
-    return af::moddims(m(i), i.dims());
 }
 
 af::array multiClamp(const af::array& m, const af::array& l, const af::array& h)
@@ -129,9 +124,11 @@ public:
                 std::to_array({EXPECTED_DEALS...}))}
     {}
 
-    StateValue expectedReturn(const Policy& policy, const StateValue& stateValue)
+    af::array expectedReturn(
+        const ActionIndices& actionIndices,
+        const StateValue& stateValue)
     {
-        const auto actions{policyToActions(policy)};
+        const auto actions{indicesToActions(actionIndices)};
         const auto validActions{multiClamp(actions, -m_nCarsB, m_nCarsA)};
 
         constexpr auto lotSize{LOT_SIZE.unwrap<LotSize>()};
@@ -153,7 +150,7 @@ public:
                 0,
                 lotSize - 1)};
 
-        return StateValue{
+        return
             af::select(
                 invalidActions(actions, m_nCarsA, m_nCarsB),
                 -af::Inf,
@@ -165,12 +162,12 @@ public:
                             postReturnedCarsB * lotSize + postReturnedCarsA)),
                     1)) -
             moveCost(validActions) -
-            holdCost(postActionCarsA, postActionCarsB)};
+            holdCost(postActionCarsA, postActionCarsB);
     }
 
-    af::array policyToActions(const Policy& policy)
+    af::array indicesToActions(const ActionIndices& actionIndices)
     {
-        return policy.unwrap<Policy>().as(s32) - MAX_MOVES;
+        return actionIndices.unwrap<ActionIndices>().as(s32) - MAX_MOVES;
     }
 
 private:
@@ -252,17 +249,17 @@ int main()
             Limits{.low{-MAX_MOVES}, .high{MAX_MOVES}},
             [&](const Policy& policy)
             {
-                return expecter.policyToActions(policy);
+                return expecter.indicesToActions(ActionIndices{policy.unwrap<Policy>()});
             })};
 
-    policy::Iteration policyIteration{
+    iteration::PolicyIteration policyIteration{
         ActionCount{N_ACTIONS},
         StateCount{LOT_SIZE * LOT_SIZE},
-        [&](const Policy& policy, const StateValue& stateValue)
+        [&](const ActionIndices& actionIndices, const StateValue& stateValue)
         {
-            return expecter.expectedReturn(policy, stateValue);
+            return expecter.expectedReturn(actionIndices, stateValue);
         },
-        [&]() { bar.tick(); }};
+        [&] { bar.tick(); }};
 
     policyIteration.iterate(plotter);
 

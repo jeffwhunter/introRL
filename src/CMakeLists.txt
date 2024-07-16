@@ -9,14 +9,15 @@ set(
     "${IRL_INCLUDE_DIR}/banditTypes.hpp"
     "${IRL_INCLUDE_DIR}/basicTypes.hpp"
     "${IRL_INCLUDE_DIR}/cartesian.hpp"
-    "${IRL_INCLUDE_DIR}/charts.hpp"
     "${IRL_INCLUDE_DIR}/environments.hpp"
+    "${IRL_INCLUDE_DIR}/iteration.hpp"
+    "${IRL_INCLUDE_DIR}/iterationTypes.hpp"
     "${IRL_INCLUDE_DIR}/linear.hpp"
-    "${IRL_INCLUDE_DIR}/policy.hpp"
-    "${IRL_INCLUDE_DIR}/policyTypes.hpp"
+    "${IRL_INCLUDE_DIR}/math.hpp"
     "${IRL_INCLUDE_DIR}/reduce.hpp"
     "${IRL_INCLUDE_DIR}/results.hpp"
-    "${IRL_INCLUDE_DIR}/stats.hpp")
+    "${IRL_INCLUDE_DIR}/stats.hpp"
+    "${IRL_INCLUDE_DIR}/subplotters.hpp")
 
 source_group(
     TREE "${PROJECT_SOURCE_DIR}/include"
@@ -26,13 +27,15 @@ source_group(
 set(
     SOURCE_LIST
     act.cpp
+    afUtils.cpp
     basicTypes.cpp
-    charts.cpp
     environments.cpp
+    iteration.cpp
     linear.cpp
-    policy.cpp
+    math.cpp
     results.cpp
-    stats.cpp)
+    stats.cpp
+    subplotters.cpp)
 
 add_library(introRL ${HEADER_LIST} ${SOURCE_LIST})
 target_compile_definitions(introRL PRIVATE NOMINMAX=1)

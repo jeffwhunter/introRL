@@ -2,19 +2,22 @@
 
 #include <functional>
 #include <ranges>
+#include <set>
+#include <span>
 #include <string>
 #include <utility>
+#include <variant>
 #include <vector>
 
 #include <matplot/matplot.h>
 
 #include "introRL/basicTypes.hpp"
-#include "introRL/policyTypes.hpp"
+#include "introRL/iterationTypes.hpp"
 #include "introRL/results.hpp"
 
 namespace af { class array; }
 
-namespace irl::charts
+namespace irl::subplotters
 {
     struct Size
     {
@@ -104,16 +107,16 @@ namespace irl::charts
     private:
         struct M
         {
-            const unsigned columns;
-            const float fontSize;
+            const unsigned columns{};
+            const float fontSize{};
 
-            const std::vector<std::string> names;
+            const std::vector<std::string> names{};
 
-            const std::vector<double> xTicks;
-            const std::vector<double> rewardTicks;
-            const std::vector<double> optimalityTicks;
+            const std::vector<double> xTicks{};
+            const std::vector<double> rewardTicks{};
+            const std::vector<double> optimalityTicks{};
 
-            unsigned column{0};
+            unsigned column{};
         } m;
 
         explicit RewardOptimalitySubplotter(M m);
@@ -155,7 +158,7 @@ namespace irl::charts
     /// </summary>
     class PolicyValueSubplotter
     {
-        using PolicyActionFn = std::function<af::array(const policy::Policy&)>;
+        using PolicyActionFn = std::function<af::array(const iteration::Policy&)>;
 
     public:
 
@@ -185,13 +188,16 @@ namespace irl::charts
             PolicyActionFn policyActionFn);
 
         /// <summary>
-        /// Plots two subplots in one column of the overall plot.
+        /// Plots a policy on an upper subplot.
         /// </summary>
         /// <param name="policy">- The policy to plot.</param>
+        void plot(const iteration::Policy& policy);
+
+        /// <summary>
+        /// Plots an state value estimate on a lower subplot.
+        /// </summary>
         /// <param name="stateValue">- The state value estimate to plot.</param>
-        void plot(
-            const policy::Policy& policy,
-            const policy::StateValue& stateValue);
+        void plot(const iteration::StateValue& stateValue);
 
         /// <summary>
         /// Shows the final plot.
@@ -201,32 +207,20 @@ namespace irl::charts
     private:
         struct M
         {
-            const unsigned columns;
-            const unsigned lotSize;
+            const unsigned columns{};
+            const unsigned lotSize{};
 
-            const std::array<double, 2> actionLimits;
-            const PolicyActionFn policyActionFn;
+            const std::array<double, 2> actionLimits{};
+            const PolicyActionFn policyActionFn{};
 
-            const std::vector<double> actionTickLocations;
-            const std::vector<double> lotTickLocations;
-            const std::vector<std::string> lotTickLabels;
+            const std::vector<double> actionTickLocations{};
+            const std::vector<double> lotTickLocations{};
+            const std::vector<std::string> lotTickLabels{};
 
-            unsigned column{0};
+            unsigned column{};
         } m;
 
         explicit PolicyValueSubplotter(M m);
-
-        /// <summary>
-        /// Plots a policy on an upper subplot.
-        /// </summary>
-        /// <param name="policy">- The policy to plot.</param>
-        void plot(const policy::Policy& policy);
-
-        /// <summary>
-        /// Plots an state value estimate on a lower subplot.
-        /// </summary>
-        /// <param name="stateValue">- The state value estimate to plot.</param>
-        void plot(const policy::StateValue& stateValue);
 
         /// <summary>
         /// Sets up some common properties for both subplots.
@@ -240,5 +234,48 @@ namespace irl::charts
         /// <param name="data">The shape {N*N} array to reshape.</param>
         /// <returns>The shape {N, N} array that was reshaped.</returns>
         af::array reshape(const af::array& data);
+    };
+
+    class ValueIterationSubplotter
+    {
+        using PolicyActionFn = std::function<af::array(const iteration::Policy&)>;
+
+    public:
+
+        static ValueIterationSubplotter make(
+            Size size,
+            unsigned columns,
+            StateCount nStates,
+            std::span<const unsigned> plotIterations,
+            std::span<const unsigned> valueXTicks,
+            PolicyActionFn policyActionFn);
+
+        void setupAxes(
+            std::string_view title,
+            std::span<const double> policyXTicks,
+            std::span<const double> policyYTicks);
+
+        void plot(const iteration::StateValue& stateValue);
+        void plot(const iteration::Policy& policy);
+
+        void show();
+
+    private:
+        struct M
+        {
+            const unsigned columns{};
+            const unsigned nStates{};
+            const std::set<unsigned> plotIterations{};
+            const std::vector<double> valueXTicks{};
+            const PolicyActionFn policyActionFn{};
+
+            unsigned column{};
+            unsigned count{};
+        } m;
+
+        explicit ValueIterationSubplotter(M m);
+
+        matplot::axes_handle policyAx() const;
+        matplot::axes_handle valueAx() const;
     };
 }

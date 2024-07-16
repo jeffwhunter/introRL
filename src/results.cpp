@@ -20,8 +20,8 @@ namespace irl::bandit::results
     {}
 
     void RewardsAndOptimality::update(
-        const Actions& actions,
-        const Actions& optimalActions,
+        const LinearActions& actions,
+        const LinearActions& optimalActions,
         const Rewards& rewards)
     {
         const af::array& rKeys{m_keys.unwrap<ReductionKeys>()};

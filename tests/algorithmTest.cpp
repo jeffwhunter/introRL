@@ -81,22 +81,22 @@ namespace irl::bandit::algorithm
     class MockAgent
     {
     public:
-        MAKE_MOCK0(act, Actions());
-        MAKE_MOCK2(update, void(Actions, Rewards));
+        MAKE_MOCK0(act, LinearActions());
+        MAKE_MOCK2(update, void(LinearActions, Rewards));
     };
 
     class MockEnvironment
     {
     public:
-        MAKE_MOCK1(reward, Rewards(Actions));
-        MAKE_MOCK0(optimal, Actions());
+        MAKE_MOCK1(reward, Rewards(LinearActions));
+        MAKE_MOCK0(optimal, LinearActions());
         MAKE_MOCK0(update, void());
     };
 
     class MockResult
     {
     public:
-        MAKE_MOCK3(update, void(Actions, Actions, Rewards));
+        MAKE_MOCK3(update, void(LinearActions, LinearActions, Rewards));
         MAKE_MOCK0(value, int());
     };
 
@@ -107,21 +107,24 @@ namespace irl::bandit::algorithm
         unsigned steps{0};
 
         MockAgent agent{};
-        REQUIRE_CALL(agent, act()).RETURN(Actions{af::array{0u}}).TIMES(stepCount);
-        REQUIRE_CALL(agent, update(ANY(Actions), ANY(Rewards))).TIMES(stepCount);
+        REQUIRE_CALL(agent, act()).RETURN(LinearActions{af::array{0u}}).TIMES(stepCount);
+        REQUIRE_CALL(agent, update(ANY(LinearActions), ANY(Rewards))).TIMES(stepCount);
 
         MockEnvironment environment{};
-        REQUIRE_CALL(environment, reward(ANY(Actions)))
+        REQUIRE_CALL(environment, reward(ANY(LinearActions)))
             .RETURN(Rewards{af::array{0.f}})
             .TIMES(stepCount);
         REQUIRE_CALL(environment, optimal())
-            .RETURN(Actions{af::array{0u}})
+            .RETURN(LinearActions{af::array{0u}})
             .TIMES(stepCount);
         REQUIRE_CALL(environment, update())
             .TIMES(stepCount);
 
         MockResult result{};
-        REQUIRE_CALL(result, update(ANY(Actions), ANY(Actions), ANY(Rewards)))
+        REQUIRE_CALL(
+            result,
+            update(ANY(LinearActions), ANY(LinearActions), ANY(Rewards))
+        )
             .TIMES(stepCount);
         REQUIRE_CALL(result, value())
             .RETURN(0)
@@ -141,16 +144,17 @@ namespace irl::bandit::algorithm
         unsigned steps{0};
 
         MockAgent agent{};
-        ALLOW_CALL(agent, act()).RETURN(Actions{af::array{0u}});
-        ALLOW_CALL(agent, update(ANY(Actions), ANY(Rewards)));
+        ALLOW_CALL(agent, act()).RETURN(LinearActions{af::array{0u}});
+        ALLOW_CALL(agent, update(ANY(LinearActions), ANY(Rewards)));
 
         MockEnvironment environment{};
-        ALLOW_CALL(environment, reward(ANY(Actions))).RETURN(Rewards{af::array{0.f}});
-        ALLOW_CALL(environment, optimal()).RETURN(Actions{af::array{0u}});
+        ALLOW_CALL(environment, reward(ANY(LinearActions)))
+            .RETURN(Rewards{af::array{0.f}});
+        ALLOW_CALL(environment, optimal()).RETURN(LinearActions{af::array{0u}});
         ALLOW_CALL(environment, update());
 
         MockResult result{};
-        ALLOW_CALL(result, update(ANY(Actions), ANY(Actions), ANY(Rewards)));
+        ALLOW_CALL(result, update(ANY(LinearActions), ANY(LinearActions), ANY(Rewards)));
         ALLOW_CALL(result, value()).RETURN(resultValue);
 
         REQUIRE(

@@ -40,7 +40,7 @@ constexpr float PARAMETER_BASE{2};
 
 constexpr auto X_SCALE_POWERS{std::views::iota(-7, 3)};
 
-template <typename T>
+template <class T>
 requires std::is_floating_point_v<T>
 constexpr auto expParameters(float parameterBase)
 {
@@ -49,7 +49,7 @@ constexpr auto expParameters(float parameterBase)
     );
 }
 
-template <typename T>
+template <class T>
 constexpr auto makeParameters(
     float parameterBase,
     std::pair<T, T> exponentRange)

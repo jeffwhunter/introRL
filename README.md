@@ -11,3 +11,4 @@ Once the dependencies are dealt with, clone this repository, open cmd, cd into t
 * [2.5](https://github.com/jeffwhunter/introrl/tree/main/exercises/2.5)
 * [2.11](https://github.com/jeffwhunter/introrl/tree/main/exercises/2.11)
 * [4.7](https://github.com/jeffwhunter/introrl/tree/main/exercises/4.7)
+* [4.9](https://github.com/jeffwhunter/introrl/tree/main/exercises/4.9)

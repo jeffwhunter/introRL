@@ -10,11 +10,13 @@ namespace irl
     namespace detail
     {
         /// <summary>
-        /// Ensures Actions contain linearized column indices.
+        /// Ensures ALinearActions contain linearized column indices.
         /// </summary>
-        struct ActionsModel : public af::array
+        struct LinearActionsModel : public af::array
         {
-            explicit ActionsModel(const af::array& columnIndices, bool linearize = true);
+            explicit LinearActionsModel(
+                const af::array& columnIndices,
+                bool linearize = true);
         };
     }
 
@@ -23,7 +25,7 @@ namespace irl
     /// af::array.
     /// </summary>
     /// <typeparam name="StronkT">The type of objects to operate on.</typeparam>
-    template <typename StronkT>
+    template <class StronkT>
     struct AFOperators
     {
         /// <summary>
@@ -35,7 +37,7 @@ namespace irl
         constexpr friend auto operator==(const StronkT& lhs, const StronkT& rhs) noexcept
             -> af::array
         {
-            static_assert(!std::is_floating_point_v<typename StronkT::underlying_type>);
+            static_assert(!std::is_floating_point_v<class StronkT::underlying_type>);
             return lhs.template unwrap<StronkT>() == rhs.template unwrap<StronkT>();
         }
 
@@ -48,7 +50,7 @@ namespace irl
         constexpr friend auto operator!=(const StronkT& lhs, const StronkT& rhs) noexcept
             -> af::array
         {
-            static_assert(!std::is_floating_point_v<typename StronkT::underlying_type>);
+            static_assert(!std::is_floating_point_v<class StronkT::underlying_type>);
             return lhs.template unwrap<StronkT>() != rhs.template unwrap<StronkT>();
         }
 
@@ -61,7 +63,7 @@ namespace irl
         constexpr friend auto operator-(const StronkT& lhs, const StronkT& rhs) noexcept
             -> af::array
         {
-            static_assert(!std::is_floating_point_v<typename StronkT::underlying_type>);
+            static_assert(!std::is_floating_point_v<class StronkT::underlying_type>);
             return lhs.template unwrap<StronkT>() - rhs.template unwrap<StronkT>();
         }
     };
@@ -72,18 +74,6 @@ namespace irl
     struct ActionCount : twig::stronk_default_unit<ActionCount, unsigned>
     {
         using stronk_default_unit::stronk_default_unit;
-    };
-
-    /// <summary>
-    /// An array of actions, one per agent, suitable for indexing af::arrays.
-    /// </summary>
-    struct Actions : twig::stronk<
-        Actions,
-        detail::ActionsModel,
-        AFOperators,
-        twig::can_forward_constructor_args>
-    {
-        using stronk::stronk;
     };
 
     /// <summary>
@@ -106,6 +96,18 @@ namespace irl
     /// The axis along which some data is indexed.
     /// </summary>
     struct IndexAxis : twig::stronk<IndexAxis, unsigned>
+    {
+        using stronk::stronk;
+    };
+
+    /// <summary>
+    /// An array of actions, one per agent, suitable for indexing af::arrays.
+    /// </summary>
+    struct LinearActions : twig::stronk<
+        LinearActions,
+        detail::LinearActionsModel,
+        AFOperators,
+        twig::can_forward_constructor_args>
     {
         using stronk::stronk;
     };
