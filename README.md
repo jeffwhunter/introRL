@@ -8,7 +8,13 @@ I wasn't able to get [arrayfire](https://github.com/arrayfire/arrayfire) working
 Once the dependencies are dealt with, clone this repository, open cmd, cd into the repo directory, and run `config-cmake.bat`. This should generate an appropriate project for your IDE in `build/`.
 
 ## Exercises
-* [2.5](https://github.com/jeffwhunter/introrl/tree/main/exercises/2.5)
-* [2.11](https://github.com/jeffwhunter/introrl/tree/main/exercises/2.11)
-* [4.7](https://github.com/jeffwhunter/introrl/tree/main/exercises/4.7)
-* [4.9](https://github.com/jeffwhunter/introrl/tree/main/exercises/4.9)
+* [2.5 - Multi-armed bandits](
+    https://github.com/jeffwhunter/introrl/tree/main/exercises/2.5)
+* [2.11 - Bandit strategies](
+    https://github.com/jeffwhunter/introrl/tree/main/exercises/2.11)
+* [4.7 - Policy iteration](
+    https://github.com/jeffwhunter/introrl/tree/main/exercises/4.7)
+* [4.9 - Value iteration](
+    https://github.com/jeffwhunter/introrl/tree/main/exercises/4.9)
+* [5.12 - Monte Carlo control](
+    https://github.com/jeffwhunter/introrl/tree/main/exercises/5.12)

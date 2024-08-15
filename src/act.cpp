@@ -3,9 +3,9 @@
 #include <arrayfire.h>
 
 #include "introRL/act.hpp"
-#include "introRL/basicTypes.hpp"
+#include "introRL/types.hpp"
 
-namespace irl::act
+namespace irl
 {
     LinearActions explore(RunCount nRuns, ActionCount nActions)
     {

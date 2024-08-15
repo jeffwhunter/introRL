@@ -9,8 +9,15 @@
 #include <introRL/afUtils.hpp>
 #include <introRL/stats.hpp>
 
-namespace irl::stats
+namespace irl
 {
+    TEST_CASE("stats.probable.is equatable")
+    {
+        REQUIRE(Probable<int>{5, .4f} == Probable<int>{5, .4000f});
+        REQUIRE(Probable<int>{5, .4f} != Probable<int>{5, .5f});
+        REQUIRE(Probable<int>{5, .4f} != Probable<int>{4, .4f});
+    }
+
     TEST_CASE("stats.poisson.returns properly shaped answers")
     {
         af::dim4 dims{2, 3, 5, 7};

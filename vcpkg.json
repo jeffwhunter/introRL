@@ -1,9 +1,10 @@
 {
   "dependencies": [
+    "blend2d",
     "catch2",
-	"indicators",
+    "indicators",
     "matplotplusplus",
-	"stronk",
-	"trompeloeil"
+    "stronk",
+    "trompeloeil"
   ]
 }

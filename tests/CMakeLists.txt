@@ -1,20 +1,12 @@
 find_package(Catch2 REQUIRED)
 find_package(trompeloeil REQUIRED)
 
-set(
-    SOURCE_LIST
-    actTest.cpp
-    afUtilsTest.cpp
-    agentsTest.cpp
-    algorithmTest.cpp
-    cartesianTest.cpp
-    environmentsTest.cpp
-    iterationTest.cpp
-    linearTest.cpp
-    mathTest.cpp
-    reduceTest.cpp
-    resultsTest.cpp
-    statsTest.cpp)
+file(GLOB_RECURSE SOURCE_LIST *.cpp)
+
+source_group(
+    TREE "${CMAKE_CURRENT_SOURCE_DIR}"
+    PREFIX "Source Files"
+    FILES ${SOURCE_LIST})
 
 add_executable(introRLtests ${SOURCE_LIST})
 target_compile_definitions(introRLtests PRIVATE NOMINMAX=1)

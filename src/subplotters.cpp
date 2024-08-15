@@ -8,10 +8,10 @@
 #include <matplot/matplot.h>
 
 #include "introRL/afUtils.hpp"
-#include "introRL/iterationTypes.hpp"
+#include "introRL/iteration/types.hpp"
 #include "introRL/subplotters.hpp"
 
-namespace irl::subplotters
+namespace irl
 {
     RewardOptimalitySubplotter::RewardOptimalitySubplotter(M m) : m{std::move(m)} {}
 

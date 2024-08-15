@@ -4,7 +4,7 @@
 
 #include "introRL/stats.hpp"
 
-namespace irl::stats
+namespace irl
 {
     af::array poisson(unsigned expectation, const af::array& samples)
     {

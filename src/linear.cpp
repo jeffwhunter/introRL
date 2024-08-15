@@ -2,9 +2,9 @@
 
 #include "introRL/linear.hpp"
 
-namespace irl::linear
+namespace irl
 {
-    af::array index(const af::array & i)
+    af::array linearIndex(const af::array & i)
     {
         const auto dZero{i.dims(0)};
 

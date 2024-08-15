@@ -10,16 +10,15 @@
 #include <indicators/progress_bar.hpp>
 #include <matplot/matplot.h>
 
-#include <introRL/agents.hpp>
-#include <introRL/algorithm.hpp>
-#include <introRL/environments.hpp>
-#include <introRL/results.hpp>
+#include <introRL/bandit/agents.hpp>
+#include <introRL/bandit/algorithm.hpp>
+#include <introRL/bandit/environments.hpp>
+#include <introRL/bandit/results.hpp>
+#include <introRL/ticker.hpp>
 
 using namespace indicators::option;
 using namespace irl;
 using namespace irl::bandit;
-using namespace irl::bandit::agents;
-using namespace irl::bandit::algorithm;
 
 constexpr unsigned FIGURE_WIDTH{1'000};
 constexpr unsigned FIGURE_HEIGHT{500};
@@ -73,8 +72,8 @@ constexpr auto toFractions(float parameterBase)
         });
 }
 
-using Environment = environments::Walking<WALK_SIZE>;
-using Result = results::RollingRewards<START_MEASURE_STEP>;
+using Environment = Walking<WALK_SIZE>;
+using Result = RollingRewards<START_MEASURE_STEP>;
 
 struct ExperimentSetup
 {
@@ -193,18 +192,11 @@ int main()
 
         const auto parameters{makeParameters<int>(PARAMETER_BASE, setup.exponentRange)};
 
-        unsigned stepCounter{0};
         const auto score{
             std::mem_fn(setup.learn)(
                 learner,
                 parameters,
-                [&]
-                {
-                    if (++stepCounter % PROGRESS_FREQ == 0)
-                    {
-                        bar.tick();
-                    }
-                })};
+                Ticker<PROGRESS_FREQ>{[&] { bar.tick(); }})};
 
         auto hPlot{matplot::semilogx(parameters, score)};
 

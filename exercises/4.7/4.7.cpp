@@ -12,17 +12,16 @@
 #include <stronk/stronk.h>
 
 #include "introRL/afUtils.hpp"
-#include "introRL/basicTypes.hpp"
+#include "introRL/types.hpp"
 #include "introRL/cartesian.hpp"
-#include "introRL/iteration.hpp"
-#include "introRL/iterationTypes.hpp"
+#include "introRL/iteration/algorithm.hpp"
+#include "introRL/iteration/types.hpp"
 #include "introRL/stats.hpp"
 #include "introRL/subplotters.hpp"
 
 using namespace indicators::option;
 using namespace irl;
 using namespace irl::iteration;
-using namespace irl::subplotters;
 
 constexpr unsigned FIGURE_WIDTH{1'500};
 constexpr unsigned FIGURE_HEIGHT{750};
@@ -63,7 +62,7 @@ af::array totalPoisson(
     af::array result{af::constant(1, 1, f32)};
     for (auto&& [c, e] : std::views::zip(counts, expected))
     {
-        result *= stats::poisson(e, c);
+        result *= poisson(e, c);
     }
 
     return result;
@@ -96,7 +95,7 @@ class RentalExpecter
 
     template <unsigned INDEX>
     using Cars =
-        cartesian::Power<
+        CartesianPower<
             Extent{LOT_SIZE.unwrap<LotSize>()},
             Rank{2},
             IndexAxis{0},
@@ -104,7 +103,7 @@ class RentalExpecter
 
     template <unsigned INDEX>
     using Deals =
-        cartesian::Power<
+        CartesianPower<
             Extent{DEAL_SIZE.unwrap<DealSize>()},
             Rank{4},
             IndexAxis{1},

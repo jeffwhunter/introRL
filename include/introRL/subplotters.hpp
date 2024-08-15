@@ -11,13 +11,13 @@
 
 #include <matplot/matplot.h>
 
-#include "introRL/basicTypes.hpp"
-#include "introRL/iterationTypes.hpp"
-#include "introRL/results.hpp"
+#include "introRL/types.hpp"
+#include "introRL/iteration/types.hpp"
+#include "introRL/bandit/results.hpp"
 
 namespace af { class array; }
 
-namespace irl::subplotters
+namespace irl
 {
     struct Size
     {
@@ -31,8 +31,8 @@ namespace irl::subplotters
     /// </summary>
     class RewardOptimalitySubplotter
     {
-        using BanditRewards = bandit::results::RewardsAndOptimality::RewardsResult;
-        using BanditOptimality = bandit::results::RewardsAndOptimality::OptimalityResult;
+        using BanditRewards = bandit::RewardsAndOptimality::RewardsResult;
+        using BanditOptimality = bandit::RewardsAndOptimality::OptimalityResult;
 
     public:
 

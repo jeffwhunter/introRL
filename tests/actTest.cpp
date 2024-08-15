@@ -6,9 +6,9 @@
 
 #include <introRL/act.hpp>
 #include <introRL/afUtils.hpp>
-#include <introRL/basicTypes.hpp>
+#include <introRL/types.hpp>
 
-namespace irl::act
+namespace irl
 {
 
     TEST_CASE("act.explore.has the proper shape")

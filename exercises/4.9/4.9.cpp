@@ -8,13 +8,12 @@
 #include <indicators/indeterminate_progress_bar.hpp>
 
 #include <introRL/afUtils.hpp>
-#include <introRL/iteration.hpp>
+#include <introRL/iteration/algorithm.hpp>
 #include <introRL/subplotters.hpp>
 
 using namespace indicators::option;
 using namespace irl;
 using namespace irl::iteration;
-using namespace irl::subplotters;
 
 constexpr unsigned FIGURE_WIDTH{1'500};
 constexpr unsigned FIGURE_HEIGHT{750};

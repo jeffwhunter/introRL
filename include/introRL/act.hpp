@@ -4,9 +4,9 @@
 
 #include <arrayfire.h>
 
-#include "introRL/basicTypes.hpp"
+#include "introRL/types.hpp"
 
-namespace irl::act
+namespace irl
 {
     /// <summary>
     /// Generate random actions suitable for exploring.

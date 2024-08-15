@@ -9,19 +9,16 @@
 #include <indicators/progress_bar.hpp>
 #include <matplot/matplot.h>
 
-#include <introRL/agents.hpp>
-#include <introRL/algorithm.hpp>
-#include <introRL/environments.hpp>
-#include <introRL/results.hpp>
+#include <introRL/bandit/agents.hpp>
+#include <introRL/bandit/algorithm.hpp>
+#include <introRL/bandit/environments.hpp>
+#include <introRL/bandit/results.hpp>
 #include <introRL/subplotters.hpp>
+#include <introRL/ticker.hpp>
 
 using namespace indicators::option;
 using namespace irl;
 using namespace irl::bandit;
-using namespace irl::bandit::agents;
-using namespace irl::bandit::algorithm;
-using namespace irl::bandit::environments;
-using namespace irl::subplotters;
 
 constexpr unsigned FIGURE_WIDTH{1'000};
 constexpr unsigned FIGURE_HEIGHT{500};
@@ -61,7 +58,7 @@ constexpr auto X_TICKS{
 constexpr auto REWARD_Y_TICKS{std::to_array({0., .5, 1., 1.5, 2., 2.5})};
 constexpr auto OPTIMALITY_Y_TICKS{std::to_array({0., .2, .4, .6, .8, 1.})};
 
-using Result = results::RewardsAndOptimality;
+using Result = RewardsAndOptimality;
 
 struct ExperimentSetup
 {
@@ -125,18 +122,11 @@ int main()
 
         bar.set_progress(0);
 
-        unsigned stepCounter{0};
         const auto score{
             std::mem_fn(setup.learn)(
                 learner,
                 EPSILONS | std::ranges::to<std::vector<float>>(),
-                [&]
-                {
-                    if (++stepCounter % PROGRESS_FREQ == 0)
-                    {
-                        bar.tick();
-                    }
-                })};
+                Ticker<PROGRESS_FREQ>{[&] { bar.tick(); }})};
 
         plotter.plot(setup.title, score.rewards, score.optimality);
     }

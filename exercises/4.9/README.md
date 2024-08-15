@@ -3,7 +3,7 @@
     <br/>
     <em>
         Consider a simple game: a gambler must decide how much of their capital to stake
-        on an unfair coin flip. Heads doubles the stake, tails loses it. The gambler wins
+        on an unfair coin flip; heads doubles the stake, tails loses it. The gambler wins
         or loses at $100 or $0, respectively. These images show a process called Value
         Iteration solving this problem. State value estimates are iteratively improved
         until stability; a policy is then chosen to greedily maximize this estimated

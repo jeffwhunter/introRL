@@ -7,12 +7,12 @@
 #include <introRL/afUtils.hpp>
 #include <introRL/linear.hpp>
 
-namespace irl::linear
+namespace irl
 {
-    TEST_CASE("linear.index.linearizes indices")
+    TEST_CASE("linear.linearIndex.linearizes indices")
     {
         REQUIRE_THAT(
-            toVector<unsigned>(index(af::array{0u, 2u, 4u})),
+            toVector<unsigned>(linearIndex(af::array{0u, 2u, 4u})),
             Catch::Matchers::RangeEquals(std::vector<unsigned>{0, 7, 14}));
     }
 }

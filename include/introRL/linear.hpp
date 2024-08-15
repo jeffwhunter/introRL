@@ -5,7 +5,7 @@ namespace af
     class array;
 }
 
-namespace irl::linear
+namespace irl
 {
     /// <summary>
     /// When arrayfire gets an array index, it doesn't do anything convenient, and simply
@@ -22,5 +22,5 @@ namespace irl::linear
     /// An array of indices in memory order, the first indexing  the first row, the
     /// second indexing the second row, the third indexing the third, and so on.
     /// </returns>
-    af::array index(const af::array& i);
+    af::array linearIndex(const af::array& i);
 }
