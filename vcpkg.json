@@ -2,8 +2,10 @@
   "dependencies": [
     "blend2d",
     "catch2",
+    "gmp",
     "indicators",
     "matplotplusplus",
+    "mpfr",
     "stronk",
     "trompeloeil"
   ]

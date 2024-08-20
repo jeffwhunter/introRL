@@ -6,7 +6,7 @@
 
 #include "introRL/types.hpp"
 
-namespace irl
+namespace irl::act
 {
     /// <summary>
     /// Generate random actions suitable for exploring.

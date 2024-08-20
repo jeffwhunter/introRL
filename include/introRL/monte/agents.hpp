@@ -24,9 +24,9 @@ namespace irl::monte
         /// <param name="maxAction">
         /// - The maximum element in any exploring action.
         /// </param>
-        /// <param name="seed">- The random seed for the action sampler.</param>
+        /// <param name="generator">- A random number generator.</param>
         /// <returns>An Explorer.</returns>
-        static Explorer make(int minAction, int maxAction, unsigned seed);
+        static Explorer make(int minAction, int maxAction, std::mt19937& generator);
 
         /// <summary>
         /// Destroys an Explorer.
@@ -50,7 +50,7 @@ namespace irl::monte
         struct M
         {
             std::set<Action> actions;
-            std::mt19937 generator;
+            std::mt19937& generator;
         } m;
 
         Explorer(M m);

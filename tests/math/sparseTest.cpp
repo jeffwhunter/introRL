@@ -4,11 +4,18 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_range_equals.hpp>
 
-#include <introRL/sparse.hpp>
+#include <introRL/math/sparse.hpp>
 
-namespace irl
+namespace irl::math
 {
-    TEST_CASE("sparse.SparseMatrix.accessor.stores values")
+    TEST_CASE("math.sparse.SparseMatrix.peek.does not store values")
+    {
+        SparseMatrix<size_t, size_t, size_t> testee{};
+        testee.peek(0, 0);
+        REQUIRE(!testee.contains(0));
+    }
+
+    TEST_CASE("math.sparse.SparseMatrix.accessor.stores values")
     {
         SparseMatrix<size_t, size_t, size_t> testee{};
 
@@ -23,7 +30,7 @@ namespace irl
         REQUIRE(testee(1, 1) == 6);
     }
 
-    TEST_CASE("sparse.SparseMatrix.accessor.returns inner maps")
+    TEST_CASE("math.sparse.SparseMatrix.accessor.returns inner maps")
     {
         SparseMatrix<size_t, size_t, size_t> testee{};
 
@@ -41,7 +48,7 @@ namespace irl
             Catch::Matchers::RangeEquals(std::map<size_t, size_t>{{0, 9}, {1, 6}}));
     }
 
-    TEST_CASE("sparse.SparseMatrix.accessor.handles complicated indices")
+    TEST_CASE("math.sparse.SparseMatrix.accessor.handles complicated indices")
     {
         SparseMatrix<std::array<float, 3>, std::array<int, 2>, size_t> testee{};
 

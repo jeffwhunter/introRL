@@ -2,8 +2,9 @@
 
 #include <algorithm>
 #include <concepts>
+#include <functional>
 #include <map>
-#include <tuple>
+#include <utility>
 
 namespace irl::math
 {
@@ -19,10 +20,8 @@ namespace irl::math
     {
         return std::ranges::max_element(
             m,
-            {},
-            [](const std::tuple<TKey, TValue>& p)
-            {
-                return std::get<1>(p);
-            })->first;
+            std::less<TValue>{},
+            &std::pair<const TKey, TValue>::second
+        )->first;
     }
 }

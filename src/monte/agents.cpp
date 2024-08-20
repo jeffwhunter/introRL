@@ -6,14 +6,14 @@
 
 namespace irl::monte
 {
-    Explorer Explorer::make(int minAction, int maxAction, unsigned seed)
+    Explorer Explorer::make(int minAction, int maxAction, std::mt19937& generator)
     {
         return Explorer{M{
             .actions{
                 mdIota<2>(minAction, maxAction + 1)
                 | std::views::transform([](auto&& action) { return Action{action}; })
                 | std::ranges::to<std::set>()},
-            .generator{std::mt19937{seed}}}};
+            .generator{generator}}};
     }
 
     bool Explorer::should_explore(float pExplore)
@@ -59,25 +59,25 @@ namespace irl::monte
     {
         auto action{Action::make()};
 
-        if (state.position[0] > m_sprintStop)
+        if (state.position.y() > m_sprintStop)
         {
-            if (state.velocity[0] > -static_cast<int>(m_sprintSpeed))
+            if (state.velocity.y() > -static_cast<int>(m_sprintSpeed))
             {
-                action[0] = -1;
+                action.y() = -1;
             }
         }
-        else if (state.velocity[0] != 0)
+        else if (state.velocity.y() != 0)
         {
-            action[0] = dampen(state.velocity[0]);
+            action.y() = dampen(state.velocity.y());
         }
 
-        if (state.position[0] < m_turnStart)
+        if (state.position.y() < m_turnStart)
         {
-            action[1] = 1;
+            action.x() = 1;
         }
-        else if (state.velocity[1] != 0)
+        else if (state.velocity.x() != 0)
         {
-            action[1] = dampen(state.velocity[1]);
+            action.x() = dampen(state.velocity.x());
         }
 
         return action;

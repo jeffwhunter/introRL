@@ -17,4 +17,5 @@ target_link_libraries(
     introRL
     ArrayFire::af
     Catch2::Catch2WithMain
+    mp++::mp++
     trompeloeil::trompeloeil)

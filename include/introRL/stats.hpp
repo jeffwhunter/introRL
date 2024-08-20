@@ -1,7 +1,10 @@
 #pragma once
 
+#include <algorithm>
+#include <iterator>
 #include <random>
 #include <set>
+#include <vector>
 
 namespace af { class array; }
 
@@ -41,16 +44,20 @@ namespace irl
     /// </returns>
     af::array poisson(unsigned expectation, const af::array& samples);
 
+    /// <summary>
+    /// Randomly returns a single element of the set.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the element to sample.</typeparam>
+    /// <param name="set">- The set to sample from.</param>
+    /// <param name="generator">- A random number generator.</param>
+    /// <returns>A copy of the sampled object.</returns>
     template <class TValue>
-    const TValue& sample(
+    TValue sample(
         const std::set<TValue>& set,
         std::uniform_random_bit_generator auto& generator)
     {
-        std::uniform_int_distribution<size_t> distribution{0, std::size(set) - 1};
-
-        auto it{std::begin(set)};
-        std::advance(it, distribution(generator));
-
-        return *it;
+        std::vector<TValue> result{};
+        std::ranges::sample(set, std::back_inserter(result), 1, generator);
+        return result.front();
     }
 }

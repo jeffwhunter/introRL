@@ -4,10 +4,10 @@
 #include <blend2d.h>
 
 #include "introRL/monte/episodes.hpp"
+#include "introRL/monte/renderers.hpp"
 #include "introRL/monte/types.hpp"
-#include "introRL/renderers.hpp"
 
-namespace irl
+namespace irl::monte
 {
     void renderBorder(
         BLContext& context,
@@ -66,11 +66,11 @@ namespace irl
                     return
                         (
                             BLPoint{
-                                static_cast<double>(tile[1]),
-                                static_cast<double>(tile[0])} +
-                                pathOffset +
+                                static_cast<double>(tile.x()),
+                                static_cast<double>(tile.y())} +
+                            pathOffset +
                             .5f
-                            ) *
+                        ) *
                         layout.tileSize;
                 }};
 

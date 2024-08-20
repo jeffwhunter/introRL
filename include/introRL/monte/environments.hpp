@@ -53,13 +53,13 @@ namespace irl::monte
         /// <param name="track">
         /// - An mdspan over the tiles that make up the track to simulate.
         /// </param>
-        /// <param name="seed">- A random seed for sampling starting states.</param>
+        /// <param name="generator">- A random number generator.</param>
         /// <returns>An Environment.</returns>
-        static Environment<H, W> make(Track track, unsigned seed)
+        static Environment<H, W> make(Track track, std::mt19937& generator)
         {
             return Environment{M{
                 .track{track},
-                .generator{seed},
+                .generator{generator},
                 .starts{
                     mdIndices(H, W)
                     | std::views::filter([=](auto&& index) { return track[index] == S; })
@@ -139,7 +139,7 @@ namespace irl::monte
         struct M
         {
             Track track;
-            std::mt19937 generator;
+            std::mt19937& generator;
             std::set<Position> starts;
         } m;
 
@@ -154,7 +154,7 @@ namespace irl::monte
         /// </returns>
         bool inBounds(const Position& p)
         {
-            if (p[0] < 0 || p[0] >= H || p[1] < 0 || p[1] >= W)
+            if (p.y() < 0 || p.y() >= H || p.x() < 0 || p.x() >= W)
             {
                 return false;
             }

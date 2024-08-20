@@ -1,5 +1,7 @@
 #include <array>
 #include <cmath>
+#include <random>
+#include <set>
 
 #include <arrayfire.h>
 #include <catch2/catch_test_macros.hpp>
@@ -38,5 +40,21 @@ namespace irl
                     float d{std::abs(l - r)};
                     return d < 0.0001;
                 }));
+    }
+
+    TEST_CASE("stats.sample.returns different values")
+    {
+        std::mt19937 generator{0};
+
+        std::set<int> elements{0, 1, 2, 3, 4, 5};
+        std::set<int> results{};
+
+
+        for (auto i : std::views::iota(0, 100))
+        {
+            results.insert(sample(elements, generator));
+        }
+
+        REQUIRE_THAT(results, Catch::Matchers::UnorderedRangeEquals(elements));
     }
 }

@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <random>
 #include <ranges>
 
 #include <catch2/catch_test_macros.hpp>
@@ -9,7 +10,9 @@ namespace irl::monte
 {
     TEST_CASE("monte.agents.Explorer.controls exploration")
     {
-        auto testee{Explorer::make(0, 0, 0)};
+        std::mt19937 generator{0};
+
+        auto testee{Explorer::make(0, 0, generator)};
 
         REQUIRE(!testee.should_explore(0.f));
         REQUIRE(testee.should_explore(1.f));
@@ -17,11 +20,12 @@ namespace irl::monte
 
     TEST_CASE("monte.agents.Explorer.samples action in range")
     {
+        std::mt19937 generator{0};
         int minAction{-2};
         int maxAction{8};
         size_t samples{10};
 
-        auto testee{Explorer::make(minAction, maxAction, 0)};
+        auto testee{Explorer::make(minAction, maxAction, generator)};
 
         for (auto _ : std::views::iota(0U, samples))
         {
@@ -41,7 +45,8 @@ namespace irl::monte
 
     TEST_CASE("monte.agents.ExpertAgent.goes forward before turn")
     {
-        auto explorer{Explorer::make(0, 0, 0)};
+        std::mt19937 generator{0};
+        auto explorer{Explorer::make(0, 0, generator)};
 
         ExpertAgent testee{1, 10, 10, explorer};
 
@@ -52,7 +57,8 @@ namespace irl::monte
 
     TEST_CASE("monte.agents.ExpertAgent.damps horizontal velocity before turn")
     {
-        auto explorer{Explorer::make(0, 0, 0)};
+        std::mt19937 generator{0};
+        auto explorer{Explorer::make(0, 0, generator)};
 
         ExpertAgent testee{1, 10, 10, explorer};
 
@@ -77,7 +83,8 @@ namespace irl::monte
 
     TEST_CASE("monte.agents.ExpertAgent.turns")
     {
-        auto explorer{Explorer::make(0, 0, 0)};
+        std::mt19937 generator{0};
+        auto explorer{Explorer::make(0, 0, generator)};
 
         ExpertAgent testee{1, 10, 10, explorer};
 
@@ -88,7 +95,8 @@ namespace irl::monte
 
     TEST_CASE("monte.agents.ExpertAgent.damps vertical velocity after turn")
     {
-        auto explorer{Explorer::make(0, 0, 0)};
+        std::mt19937 generator{0};
+        auto explorer{Explorer::make(0, 0, generator)};
 
         ExpertAgent testee{1, 10, 10, explorer};
 
@@ -109,7 +117,8 @@ namespace irl::monte
 
     TEST_CASE("monte.agents.TableAgent.acts according to a table")
     {
-        auto explorer{Explorer::make(0, 0, 0)};
+        std::mt19937 generator{0};
+        auto explorer{Explorer::make(0, 0, generator)};
 
         TableAgent testee{
             {

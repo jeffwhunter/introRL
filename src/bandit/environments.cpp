@@ -1,6 +1,6 @@
 #include <arrayfire.h>
 
-#include "introRL/act.hpp"
+#include "introRL/act/af.hpp"
 #include "introRL/bandit/environments.hpp"
 #include "introRL/bandit/types.hpp"
 #include "introRL/types.hpp"
@@ -20,7 +20,7 @@ namespace irl::bandit
 
     LinearActions Stationary::optimal() const
     {
-        return greedy(m_qStar);
+        return act::greedy(m_qStar);
     }
 
     void Stationary::update() const {}

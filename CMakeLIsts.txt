@@ -39,6 +39,7 @@ find_package(ArrayFire REQUIRED)
 find_package(blend2d REQUIRED)
 find_package(indicators REQUIRED)
 find_package(Matplot++ REQUIRED)
+find_package(mp++ REQUIRED)
 find_package(stronk REQUIRED)
 
 add_subdirectory(exercises)

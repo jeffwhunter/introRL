@@ -2,10 +2,10 @@
 
 #include <arrayfire.h>
 
-#include "introRL/act.hpp"
+#include "introRL/act/af.hpp"
 #include "introRL/types.hpp"
 
-namespace irl
+namespace irl::act
 {
     LinearActions explore(RunCount nRuns, ActionCount nActions)
     {

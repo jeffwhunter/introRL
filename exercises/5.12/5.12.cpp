@@ -10,7 +10,7 @@
 #include <introRL/types.hpp>
 #include <introRL/monte/agents.hpp>
 #include <introRL/monte/algorithm.hpp>
-#include <introRL/renderers.hpp>
+#include <introRL/monte/renderers.hpp>
 #include <introRL/ticker.hpp>
 #include <introRL/types.hpp>
 
@@ -122,6 +122,7 @@ static indicators::ProgressBar makeBar(indicators::Color colour, std::string_vie
 int main()
 {
     auto seed{std::random_device{}()};
+    std::mt19937 generator{seed};
 
     af::getDefaultRandomEngine().setSeed(seed);
 
@@ -129,9 +130,9 @@ int main()
 
     TEnv::Track track{T_DATA.data()};
 
-    auto environment{TEnv::make(track, seed)};
+    auto environment{TEnv::make(track, generator)};
 
-    auto explorer{Explorer::make(MIN_ACTION, MAX_ACTION, seed)};
+    auto explorer{Explorer::make(MIN_ACTION, MAX_ACTION, generator)};
 
     ExpertAgent teacher{SPRINT_SPEED, SPRINT_STOP, TURN_START, explorer};
 
@@ -172,6 +173,7 @@ int main()
                     std::forward<decltype(agent)>(agent),
                     environment,
                     explorer,
+                    generator,
                     Ticker<N_EPISODES.unwrap<EpisodeCount>() / PROGRESS_TICKS>{
                         [&] { bar.tick(); }});
             }};

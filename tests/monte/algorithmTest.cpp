@@ -1,12 +1,13 @@
 #include <iterator>
 #include <map>
+#include <random>
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/trompeloeil.hpp>
 
+#include <introRL/math/sparse.hpp>
 #include <introRL/monte/algorithm.hpp>
 #include <introRL/monte/types.hpp>
-#include <introRL/sparse.hpp>
 #include <introRL/stats.hpp>
 
 namespace irl::monte
@@ -93,17 +94,19 @@ namespace irl::monte
 
     TEST_CASE("monte.algorithm.rewind.collects information on encountered experiences")
     {
+        std::mt19937 generator{0};
+
         State state{.position{Position::make(0, 1)}, .velocity{Velocity::make(2, 3)}};
         auto action{Action::make(4, 5)};
 
-        SparseMatrix<State, Action, float> c{};
-        SparseMatrix<State, Action, float> q{};
+        math::SparseMatrix<State, Action, float> c{};
+        math::SparseMatrix<State, Action, float> q{};
         std::map<State, Action> pi{};
 
         Episode episode{};
         episode.append(state, Probable<Action>{action, 1.f});
 
-        rewind<.5f>(c, q, pi, episode);
+        rewind<.5f>(c, q, pi, episode, generator);
 
         REQUIRE(c(state, action) == 1.f);
         REQUIRE(q(state, action) == 1.f);
@@ -112,6 +115,8 @@ namespace irl::monte
 
     TEST_CASE("monte.algorithm.control.returns an agent that mimics it's teacher")
     {
+        std::mt19937 generator{0};
+
         State start{.position{Position::make(0, 1)}, .velocity{Velocity::make(2, 3)}};
 
         State state{.position{Position::make()}};
@@ -127,11 +132,14 @@ namespace irl::monte
         ALLOW_CALL(environment, step(ANY(State), ANY(Action))).RETURN(state);
         ALLOW_CALL(environment, reset()).RETURN(start);
 
-        auto explorer{Explorer::make(0, 0, 0)};
+        auto explorer{Explorer::make(0, 0, generator)};
 
         REQUIRE(
-            control<EpisodeCount{1}, StepCount{5}, 0.f>(agent, environment, explorer)
-                .act(start, 0.f).value ==
+            control<EpisodeCount{1}, StepCount{5}, 0.f>(
+                agent,
+                environment,
+                explorer,
+                generator).act(start, 0.f).value ==
             action);
     }
 }

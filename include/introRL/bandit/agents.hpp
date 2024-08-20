@@ -4,7 +4,7 @@
 
 #include <arrayfire.h>
 
-#include "introRL/act.hpp"
+#include "introRL/act/af.hpp"
 #include "introRL/afUtils.hpp"
 #include "introRL/bandit/types.hpp"
 #include "introRL/types.hpp"
@@ -42,7 +42,7 @@ namespace irl::bandit
         /// <returns>An array of selected actions, one per agent.</returns>
         LinearActions act() const
         {
-            return eGreedy(m_q, m_e);
+            return act::eGreedy(m_q, m_e);
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace irl::bandit
         /// <returns>An array of selected actions, one per agent.</returns>
         LinearActions act() const
         {
-            return eGreedy(m_q, m_e);
+            return act::eGreedy(m_q, m_e);
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace irl::bandit
         /// <returns>An array of selected actions, one per agent.</returns>
         LinearActions act() const
         {
-            return greedy(m_q);
+            return act::greedy(m_q);
         }
 
         /// <summary>
@@ -227,7 +227,7 @@ namespace irl::bandit
         /// <returns>An array of selected actions, one per agent.</returns>
         LinearActions act() const
         {
-            return greedy(m_q + mod(m_t));
+            return act::greedy(m_q + mod(m_t));
         }
 
         /// <summary>
@@ -304,7 +304,7 @@ namespace irl::bandit
         /// <returns>An array of selected actions, one per agent.</returns>
         LinearActions act() const
         {
-            return choose(pi());
+            return act::choose(pi());
         }
 
         /// <summary>

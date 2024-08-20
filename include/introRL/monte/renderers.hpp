@@ -14,7 +14,7 @@
 #include "introRL/monte/environments.hpp"
 #include "introRL/monte/episodes.hpp"
 
-namespace irl
+namespace irl::monte
 {
     /// <summary>
     /// Models a race car track! Vrrooom!

@@ -4,27 +4,27 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_range_equals.hpp>
 
-#include <introRL/act.hpp>
+#include <introRL/act/af.hpp>
 #include <introRL/afUtils.hpp>
 #include <introRL/types.hpp>
 
-namespace irl
+namespace irl::act
 {
 
-    TEST_CASE("act.explore.has the proper shape")
+    TEST_CASE("act.af.explore.has the proper shape")
     {
         REQUIRE(
             explore(RunCount{5}, ActionCount{7}).unwrap<LinearActions>().dims() ==
             af::dim4{5});
     }
 
-    TEST_CASE("act.explore.has the proper type")
+    TEST_CASE("act.af.explore.has the proper type")
     {
         REQUIRE(
             explore(RunCount{2}, ActionCount{3}).unwrap<LinearActions>().type() == u32);
     }
 
-    TEST_CASE("act.eGreedy.has the proper shape")
+    TEST_CASE("act.af.eGreedy.has the proper shape")
     {
         REQUIRE(
             eGreedy(af::constant(0, 4, 8, f32), 0).unwrap<LinearActions>().dims() ==
@@ -37,7 +37,7 @@ namespace irl
             ).unwrap<LinearActions>().dims() == af::dim4{4});
     }
 
-    TEST_CASE("act.eGreedy.has the proper type")
+    TEST_CASE("act.af.eGreedy.has the proper type")
     {
         REQUIRE(
             eGreedy(af::constant(0, 4, 8, f32), 0).unwrap<LinearActions>().type() ==
@@ -50,7 +50,7 @@ namespace irl
             ).unwrap<LinearActions>().type() == u32);
     }
 
-    TEST_CASE("act.eGreedy.is greedy when epsilon is zero")
+    TEST_CASE("act.af.eGreedy.is greedy when epsilon is zero")
     {
         constexpr unsigned nRuns{3};
         constexpr unsigned nActions{5};
@@ -76,7 +76,7 @@ namespace irl
             allMax);
     }
 
-    TEST_CASE("act.greedy.returns highest index")
+    TEST_CASE("act.af.greedy.returns highest index")
     {
         constexpr unsigned nRuns{3};
         constexpr unsigned nActions{5};
@@ -94,7 +94,7 @@ namespace irl
                 | std::views::take(nRuns)));
     }
 
-    TEST_CASE("act.greedy.probably breaks ties")
+    TEST_CASE("act.af.greedy.probably breaks ties")
     {
         REQUIRE(
             af::setUnique(
@@ -103,7 +103,7 @@ namespace irl
             1);
     }
 
-    TEST_CASE("act.choose.picks definite results")
+    TEST_CASE("act.af.choose.picks definite results")
     {
         constexpr unsigned nRuns{3};
         constexpr unsigned nActions{5};
@@ -121,7 +121,7 @@ namespace irl
                 | std::views::take(nRuns)));
     }
 
-    TEST_CASE("act.choose.probably breaks ties")
+    TEST_CASE("act.af.choose.probably breaks ties")
     {
         REQUIRE(
             af::setUnique(
@@ -130,14 +130,14 @@ namespace irl
             1);
     }
 
-    TEST_CASE("act.choose.has the proper shape")
+    TEST_CASE("act.af.choose.has the proper shape")
     {
         REQUIRE(
             choose(af::constant(0, 4, 8, f32)).unwrap<LinearActions>().dims() ==
             af::dim4{4});
     }
 
-    TEST_CASE("act.choose.has the proper type")
+    TEST_CASE("act.af.choose.has the proper type")
     {
         REQUIRE(
             choose(af::constant(0, 4, 8, f32)).unwrap<LinearActions>().type() == u32);

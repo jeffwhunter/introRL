@@ -3,16 +3,17 @@
 #include <concepts>
 #include <functional>
 #include <map>
+#include <random>
 #include <ranges>
 #include <set>
 #include <utility>
 #include <vector>
 
 #include "introRL/math/map.hpp"
+#include "introRL/math/sparse.hpp"
 #include "introRL/monte/agents.hpp"
 #include "introRL/monte/episodes.hpp"
 #include "introRL/monte/types.hpp"
-#include "introRL/sparse.hpp"
 #include "introRL/stats.hpp"
 #include "introRL/types.hpp"
 
@@ -122,10 +123,11 @@ namespace irl::monte
     /// <param name="episode">- The episode to learn from.</param>
     template <float GAMMA>
     static void rewind(
-        SparseMatrix<State, Action, float>& c,
-        SparseMatrix<State, Action, float>& q,
+        math::SparseMatrix<State, Action, float>& c,
+        math::SparseMatrix<State, Action, float>& q,
         std::map<State, Action>& pi,
-        const Episode episode)
+        const Episode episode,
+        std::uniform_random_bit_generator auto& generator)
     {
         const auto T{episode.bigT()};
         auto g{0.f};
@@ -169,10 +171,11 @@ namespace irl::monte
         CAgent auto& teacher,
         CEnvironment auto& environment,
         Explorer& explorer,
+        std::uniform_random_bit_generator auto& generator,
         std::function<void(void)> progressCallback = []{})
     {
-        SparseMatrix<State, Action, float> c{};
-        SparseMatrix<State, Action, float> q{};
+        math::SparseMatrix<State, Action, float> c{};
+        math::SparseMatrix<State, Action, float> q{};
         std::map<State, Action> pi{};
 
         for (size_t t : std::views::iota(0U, N_EPISODES.unwrap<EpisodeCount>()))
@@ -186,7 +189,7 @@ namespace irl::monte
 
             if (episode.bigT() < MAX_EPISODE_STEPS.unwrap<StepCount>())
             {
-                rewind<.1f>(c, q, pi, std::move(episode));
+                rewind<.1f>(c, q, pi, std::move(episode), generator);
             }
 
             progressCallback();

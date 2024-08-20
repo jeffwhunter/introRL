@@ -23,4 +23,5 @@ target_link_libraries(
     ArrayFire::af
     blend2d::blend2d
     Matplot++::matplot
+    mp++::mp++
     twig::stronk)
