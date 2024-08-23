@@ -270,6 +270,22 @@ namespace irl
     };
 
     /// <summary>
+    /// The width of a progress bar.
+    /// </summary>
+    struct ProgressWidth : twig::stronk_default_unit<ProgressWidth, unsigned>
+    {
+        using stronk_default_unit::stronk_default_unit;
+    };
+
+    /// <summary>
+    /// The number of calls it takes to fill up a progress bar.
+    /// </summary>
+    struct ProgressTicks : twig::stronk_default_unit<ProgressTicks, unsigned>
+    {
+        using stronk_default_unit::stronk_default_unit;
+    };
+
+    /// <summary>
     /// The rank of a tensor.
     /// </summary>
     struct Rank : twig::stronk<Rank, unsigned>

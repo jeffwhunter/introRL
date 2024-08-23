@@ -1,6 +1,8 @@
 ﻿#pragma once
 
 #include <concepts>
+#include <ranges>
+#include <type_traits>
 
 #include "introRL/td/types.hpp"
 
@@ -37,4 +39,12 @@ namespace irl::td
         { environment.done(state) } -> std::same_as<bool>;
         { environment.wind(index) } -> std::same_as<int>;
     };
+
+    /// <summary>
+    /// Models types that are ranges of specific element types.
+    /// </summary>
+    template <class T, class E>
+    concept CRangeOf =
+        std::ranges::range<T> &&
+        std::same_as<std::ranges::range_value_t<T>, E>;
 }

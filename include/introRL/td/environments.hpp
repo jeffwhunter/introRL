@@ -2,10 +2,12 @@
 
 #include <algorithm>
 #include <array>
+#include <random>
 #include <ranges>
 #include <set>
 #include <utility>
 
+#include <introRL/stats.hpp>
 #include <introRL/td/types.hpp>
 
 namespace irl::td
@@ -16,8 +18,9 @@ namespace irl::td
     /// <typeparam name="W">The number of columns in the grid world.</typeparam>
     /// <typeparam name="H">The number of rows in the grid world.</typeparam>
     template <Width W, Height H>
-    class Environment
+    class Windy
     {
+    protected:
         using Wind = std::array<int, W.unwrap<Width>()>;
 
     public:
@@ -27,7 +30,7 @@ namespace irl::td
         /// <param name="start">- The starting position.</param>
         /// <param name="goal">- The ending position.</param>
         /// <param name="wind">- The strength of the wind in each column.</param>
-        Environment(State start, State goal, Wind wind) :
+        Windy(State start, State goal, Wind wind) :
             m_start{std::move(start)},
             m_goal{std::move(goal)},
             m_wind{std::move(wind)}
@@ -55,7 +58,7 @@ namespace irl::td
         /// <returns>Where the step ends up.</returns>
         State step(const State& state, const Action& action) const
         {
-            return applyWind(state + action, m_wind[state.x()]);
+            return applyWind(state + action, wind(state.x()));
         }
 
         /// <summary>
@@ -117,7 +120,7 @@ namespace irl::td
         /// <param name="state">- The state to apply wind to.</param>
         /// <param name="wind">- The strength of the wind to apply.</param>
         /// <returns>The new state, pushed by the wind.</returns>
-        State applyWind(State&& state, int wind) const
+        virtual State applyWind(State&& state, int wind) const
         {
             State result{std::move(state)};
 
@@ -130,5 +133,61 @@ namespace irl::td
         State m_start;
         State m_goal;
         Wind m_wind;
+    };
+
+    /// <summary>
+    /// A windy grid world with a randomly varying wind.
+    /// </summary>
+    /// <typeparam name="W">The number of columns in the grid world.</typeparam>
+    /// <typeparam name="H">The number of rows in the grid world.</typeparam>
+    template <Width W, Height H>
+    class RandomWindy : public Windy<W, H>
+    {
+    public:
+        /// <summary>
+        /// Creates a randomly windy grid world.
+        /// </summary>
+        /// <param name="start">- The starting position.</param>
+        /// <param name="goal">- The ending position.</param>
+        /// <param name="wind">- The strength of the wind in each column.</param>
+        /// <param name="generator">- A random number generator.</param>
+        RandomWindy(
+            State start,
+            State goal,
+            Windy<W, H>::Wind wind,
+            std::mt19937& generator)
+        :
+            Windy<W, H>{start, goal, wind},
+            m_generator{generator}
+        {}
+
+    private:
+        /// <summary>
+        /// Applies a wind, that uniformly varies from [-1, 1], to some state.
+        /// </summary>
+        /// <param name="state">- The state to apply wind to.</param>
+        /// <param name="wind">- The strength of the wind to apply.</param>
+        /// <returns>The new state, pushed by the varying wind.</returns>
+        State applyWind(State&& state, int wind) const override
+        {
+            State result{std::move(state)};
+
+            if (wind != 0)
+            {
+                result.y() = static_cast<size_t>(
+                    std::clamp(
+                        static_cast<int>(result.y()) +
+                        wind +
+                        sample(m_windVariation, m_generator),
+                        0,
+                        H - 1));
+            }
+
+            return result;
+        }
+
+        inline static const std::set<int> m_windVariation{-1, 0, 1};
+
+        std::mt19937& m_generator;
     };
 }

@@ -5,8 +5,8 @@
 #include <ranges>
 
 #include <arrayfire.h>
+#include <indicators/color.hpp>
 #include <indicators/cursor_control.hpp>
-#include <indicators/progress_bar.hpp>
 #include <matplot/matplot.h>
 
 #include <introRL/bandit/agents.hpp>
@@ -15,8 +15,9 @@
 #include <introRL/bandit/results.hpp>
 #include <introRL/subplotters.hpp>
 #include <introRL/ticker.hpp>
+#include <introRL/utils.hpp>
+#include <introRL/types.hpp>
 
-using namespace indicators::option;
 using namespace irl;
 using namespace irl::bandit;
 
@@ -29,9 +30,9 @@ constexpr unsigned N_ACTIONS{10};
 constexpr unsigned N_RUNS_PER_PARAMETER{2'000};
 constexpr unsigned N_STEPS{10'000};
 
-constexpr unsigned PROGRESS_WIDTH{50};
-constexpr unsigned PROGRESS_TICKS{10};
-constexpr unsigned PROGRESS_FREQ{N_STEPS / PROGRESS_TICKS};
+constexpr ProgressWidth PROGRESS_WIDTH{50};
+constexpr ProgressTicks PROGRESS_TICKS{10};
+constexpr unsigned PROGRESS_FREQ{N_STEPS / PROGRESS_TICKS.unwrap<ProgressTicks>()};
 
 constexpr float ALPHA{.1};
 constexpr float WALK_SIZE{.01};
@@ -108,17 +109,12 @@ int main()
 
     for (const auto& setup : SETUPS)
     {
-        indicators::ProgressBar bar{
-            MaxProgress{PROGRESS_TICKS},
-            BarWidth{PROGRESS_WIDTH},
-            Start{"["},
-            Fill{"="},
-            Lead{">"},
-            Remainder{" "},
-            End{"]"},
-            PrefixText{setup.title},
-            ShowElapsedTime{true},
-            ShowRemainingTime{true}};
+        auto bar{
+            makeBar(
+                setup.title,
+                indicators::Color::unspecified,
+                PROGRESS_WIDTH,
+                PROGRESS_TICKS)};
 
         bar.set_progress(0);
 

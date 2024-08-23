@@ -6,8 +6,8 @@
 #include <set>
 #include <type_traits>
 
+#include <indicators/color.hpp>
 #include <indicators/cursor_control.hpp>
-#include <indicators/progress_bar.hpp>
 #include <matplot/matplot.h>
 
 #include <introRL/bandit/agents.hpp>
@@ -15,8 +15,9 @@
 #include <introRL/bandit/environments.hpp>
 #include <introRL/bandit/results.hpp>
 #include <introRL/ticker.hpp>
+#include <introRL/types.hpp>
+#include <introRL/utils.hpp>
 
-using namespace indicators::option;
 using namespace irl;
 using namespace irl::bandit;
 
@@ -29,9 +30,9 @@ constexpr unsigned N_RUNS_PER_PARAMETER{2'000};
 constexpr unsigned N_STEPS{200'000};
 constexpr unsigned START_MEASURE_STEP{100'000};
 
-constexpr unsigned PROGRESS_WIDTH{50};
-constexpr unsigned PROGRESS_TICKS{10};
-constexpr unsigned PROGRESS_FREQ{N_STEPS / PROGRESS_TICKS};
+constexpr ProgressWidth PROGRESS_WIDTH{50};
+constexpr ProgressTicks PROGRESS_TICKS{10};
+constexpr unsigned TICK_RATE{N_STEPS / PROGRESS_TICKS.unwrap<ProgressTicks>()};
 
 constexpr float ALPHA{.1};
 constexpr float WALK_SIZE{.01};
@@ -175,18 +176,12 @@ int main()
 
     for (const auto& setup : SETUPS)
     {
-        indicators::ProgressBar bar{
-            MaxProgress{PROGRESS_TICKS},
-            ForegroundColor{setup.barColour},
-            BarWidth{PROGRESS_WIDTH},
-            Start{"["},
-            Fill{"="},
-            Lead{">"},
-            Remainder{" "},
-            End{"]"},
-            PrefixText{setup.barTitle},
-            ShowElapsedTime{true},
-            ShowRemainingTime{true}};
+        auto bar{
+            makeBar(
+                setup.barTitle,
+                setup.barColour,
+                PROGRESS_WIDTH,
+                PROGRESS_TICKS)};
 
         bar.set_progress(0);
 
@@ -196,7 +191,7 @@ int main()
             std::mem_fn(setup.learn)(
                 learner,
                 parameters,
-                Ticker<PROGRESS_FREQ>{[&] { bar.tick(); }})};
+                Ticker<TICK_RATE>{[&] { bar.tick(); }})};
 
         auto hPlot{matplot::semilogx(parameters, score)};
 

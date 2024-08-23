@@ -4,8 +4,8 @@
 #include <random>
 #include <ranges>
 
+#include <indicators/color.hpp>
 #include <indicators/cursor_control.hpp>
-#include <indicators/progress_bar.hpp>
 
 #include <introRL/types.hpp>
 #include <introRL/monte/agents.hpp>
@@ -13,9 +13,8 @@
 #include <introRL/monte/renderers.hpp>
 #include <introRL/ticker.hpp>
 #include <introRL/types.hpp>
+#include <introRL/utils.hpp>
 
-using namespace indicators;
-using namespace indicators::option;
 using namespace irl;
 using namespace irl::monte;
 
@@ -35,10 +34,17 @@ auto PATH_COLOURS{
         std::to_array({BLRgba32{0xCCFF0000}, BLRgba32{0xCC880000}})
     })};
 
-auto BAR_COLOURS{std::to_array({Color::red, Color::blue, Color::green})};
+auto BAR_COLOURS{
+    std::to_array({
+        indicators::Color::red,
+        indicators::Color::blue,
+        indicators::Color::green})};
 
-constexpr size_t PROGRESS_WIDTH{50};
-constexpr size_t PROGRESS_TICKS{50};
+constexpr ProgressWidth PROGRESS_WIDTH{50};
+constexpr ProgressTicks PROGRESS_TICKS{50};
+constexpr auto tickRate{
+    N_EPISODES.unwrap<EpisodeCount>()
+    / PROGRESS_TICKS.unwrap<ProgressTicks>()};
 
 constexpr auto T_DATA{
     std::to_array({
@@ -104,21 +110,6 @@ constexpr Layout LAYOUT{
     .pathOffset{.8, .8},
     .strokeWidth{2}};
 
-static indicators::ProgressBar makeBar(indicators::Color colour, std::string_view title)
-{
-    return indicators::ProgressBar{
-        MaxProgress{PROGRESS_TICKS},
-        ForegroundColor{colour},
-        BarWidth{PROGRESS_WIDTH},
-        Start{"["},
-        Fill{"="},
-        Lead{">"},
-        Remainder{" "},
-        End{"]"},
-        PrefixText{title},
-        ShowRemainingTime{true}};
-}
-
 int main()
 {
     auto seed{std::random_device{}()};
@@ -161,8 +152,10 @@ int main()
     {
         auto bar{
             makeBar(
+                std::format("generation {}", i + 1),
                 BAR_COLOURS[i % BAR_COLOURS.size()],
-                std::format("generation {}", i + 1))};
+                PROGRESS_WIDTH,
+                PROGRESS_TICKS)};
 
         bar.set_progress(0);
 
@@ -174,8 +167,7 @@ int main()
                     environment,
                     explorer,
                     generator,
-                    Ticker<N_EPISODES.unwrap<EpisodeCount>() / PROGRESS_TICKS>{
-                        [&] { bar.tick(); }});
+                    Ticker<tickRate>{[&] { bar.tick(); }});
             }};
 
         student.emplace(

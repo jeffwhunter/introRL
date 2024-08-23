@@ -22,7 +22,7 @@ namespace irl::td
     /// <param name="agent">- The acting agent.</param>
     /// <returns>The episode that played out.</returns>
     template <StepCount MAX_STEPS>
-    std::vector<State> demo(
+    Episode episode(
         const Actions& actions,
         const Q& q,
         CEnvironment auto& environment,

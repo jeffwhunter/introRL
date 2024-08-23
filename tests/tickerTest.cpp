@@ -3,12 +3,13 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <introRL/ticker.hpp>
+#include <introRL/types.hpp>
 
 namespace irl
 {
     TEST_CASE("ticker.Ticker.call.ticks at some rate")
     {
-        constexpr size_t rate{10};
+        constexpr unsigned rate{10};
 
         size_t calls{};
         Ticker<rate> testee{[&] { ++calls; }};

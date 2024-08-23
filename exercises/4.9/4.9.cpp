@@ -19,7 +19,6 @@ constexpr unsigned FIGURE_WIDTH{1'500};
 constexpr unsigned FIGURE_HEIGHT{750};
 
 constexpr unsigned PROGRESS_WIDTH{50};
-constexpr unsigned PROGRESS_TICKS{4};
 
 constexpr unsigned N_STATES{99};
 constexpr unsigned MAX_N_ACTIONS{(N_STATES + 1) / 2};

@@ -5,8 +5,8 @@
 #include <ranges>
 
 #include <arrayfire.h>
+#include <indicators/color.hpp>
 #include <indicators/cursor_control.hpp>
-#include <indicators/progress_bar.hpp>
 #include <matplot/matplot.h>
 #include <stronk/prefabs.h>
 #include <stronk/stronk.h>
@@ -18,8 +18,8 @@
 #include "introRL/iteration/types.hpp"
 #include "introRL/stats.hpp"
 #include "introRL/subplotters.hpp"
+#include "introRL/utils.hpp"
 
-using namespace indicators::option;
 using namespace irl;
 using namespace irl::iteration;
 
@@ -42,7 +42,7 @@ constexpr unsigned DEAL_SIZE{11};
 
 constexpr unsigned POLICY_ITERATIONS{4};
 
-constexpr unsigned PROGRESS_WIDTH{50};
+constexpr ProgressWidth PROGRESS_WIDTH{50};
 
 constexpr float MOVE_COST{2};
 constexpr float FREE_MOVES_A_TO_B{1};
@@ -225,17 +225,12 @@ int main()
 
     indicators::show_console_cursor(false);
 
-    indicators::ProgressBar bar{
-        MaxProgress{POLICY_ITERATIONS},
-        BarWidth{PROGRESS_WIDTH},
-        Start{"["},
-        Fill{"="},
-        Lead{">"},
-        Remainder{" "},
-        End{"]"},
-        PrefixText{"policy iterating"},
-        ShowElapsedTime{true},
-        ShowRemainingTime{true}};
+    auto bar{
+        irl::makeBar(
+            "policy iterating",
+            indicators::Color::unspecified,
+            PROGRESS_WIDTH,
+            ProgressTicks{POLICY_ITERATIONS})};
 
     bar.set_progress(0);
 

@@ -2,6 +2,7 @@
 
 #include <concepts>
 #include <set>
+#include <vector>
 
 #include <mp++/mp++.hpp>
 #include <mp++/real.hpp>
@@ -199,6 +200,9 @@ namespace irl::td
     /// A set of actions.
     /// </summary>
     using Actions = std::set<Action>;
+
+    using Episode = std::vector<State>;
+    using Demo = std::vector<Episode>;
 
     /// <summary>
     /// An action value table.

@@ -20,3 +20,5 @@ Once the dependencies are dealt with, clone this repository, open cmd, cd into t
     https://github.com/jeffwhunter/introrl/tree/main/exercises/5.12)
 * [6.9 - SARSA control](
     https://github.com/jeffwhunter/introrl/tree/main/exercises/6.9)
+* [6.10 - SARSA self-guidance](
+    https://github.com/jeffwhunter/introrl/tree/main/exercises/6.10)

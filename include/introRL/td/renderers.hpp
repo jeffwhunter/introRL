@@ -129,21 +129,21 @@ namespace irl::td
     /// - The top left of where the environment will be rendered.
     /// </param>
     /// <param name="layout">- The layout of the rendered image.</param>
-    /// <param name="demo">
-    /// - A sequence of positions that traces some agent's trajectory.
+    /// <param name="episode">
+    /// - A sequence of states that traces some agent's trajectory.
     /// </param>
     /// <param name="colour">- The colour to render the trajectory in.</param>
-    static void renderDemo(
+    static void renderEpisode(
         BLContext& context,
         BLPoint position,
         Layout layout,
-        const std::vector<State>& demo,
+        const Episode& episode,
         const BLRgba32 colour)
     {
         context.setStrokeWidth(1);
         context.setStrokeStyle(colour);
 
-        for (const auto& w : demo | std::views::slide(2))
+        for (const auto& w : episode | std::views::slide(2))
         {
             const State& from{w[0]};
             const State& to{w[1]};
@@ -175,22 +175,25 @@ namespace irl::td
     /// </param>
     /// <param name="layout">- The layout of the rendered image.</param>
     /// <param name="environment">- The windy grid world to render.</param>
-    /// <param name="demos">- A sequence of trajectories.</param>
+    /// <param name="demo">- A sequence of episodes.</param>
     /// <param name="font">- The font to use for text.</param>
-    /// <param name="colours">- The colours to render the trajectories in.</param>
-    void renderDemos(
+    /// <param name="colours">- The colours to render the episodes in.</param>
+    void renderDemo(
         BLContext& context,
         BLPoint position,
         Layout layout,
         const CEnvironment auto& environment,
-        const std::vector<std::vector<State>>& demos,
-        const BLFont& font,
-        const std::vector<BLRgba32>& colours)
+        CRangeOf<Episode> auto&& demo,
+        CRangeOf<BLRgba32> auto&& colours,
+        const BLFont& font)
     {
         renderEnvironment(context, position, layout, environment, font);
-        for (const auto& [demo, colour] : std::views::zip(demos, colours))
+        for (auto&& [episode, colour] :
+            std::views::zip(
+                std::forward<decltype(demo)>(demo),
+                std::forward<decltype(colours)>(colours)))
         {
-            renderDemo(context, position, layout, demo, colour);
+            renderEpisode(context, position, layout, episode, colour);
         }
     }
 }
