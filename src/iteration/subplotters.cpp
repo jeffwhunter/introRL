@@ -1,87 +1,23 @@
 #include <format>
 #include <ranges>
-#include <span>
 #include <string>
-#include <string_view>
+#include <utility>
 #include <vector>
 
 #include <matplot/matplot.h>
 
 #include "introRL/afUtils.hpp"
+#include "introRL/iteration/subplotters.hpp"
 #include "introRL/iteration/types.hpp"
-#include "introRL/subplotters.hpp"
 
-namespace irl
+namespace irl::iteration
 {
-    RewardOptimalitySubplotter::RewardOptimalitySubplotter(M m) : m{std::move(m)} {}
-
-    void RewardOptimalitySubplotter::plot(
-        std::string title,
-        const BanditRewards& rewards,
-        const BanditOptimality& optimalities)
-    {
-        plot(title, rewards);
-        plot(optimalities);
-
-        ++m.column;
-    }
-
-    void RewardOptimalitySubplotter::show()
-    {
-        matplot::show();
-    }
-
-    void RewardOptimalitySubplotter::plot(
-        std::string title,
-        const BanditRewards& rewards)
-    {
-        matplot::subplot(2, m.columns, m.column);
-        matplot::title(title);
-        setupAxes(m.rewardTicks, "reward");
-
-        const auto x{matplot::iota(1, m.xTicks.back())};
-        for (const auto& [name, reward] : std::views::zip(m.names, rewards))
-        {
-            matplot::plot(x, reward)->display_name(name);
-        }
-    }
-
-    void RewardOptimalitySubplotter::plot(const BanditOptimality& optimalities)
-    {
-        matplot::subplot(2, m.columns, size_t{m.columns} + m.column);
-        setupAxes(m.optimalityTicks, "optimal");
-
-        const auto x{matplot::iota(1, m.xTicks.back())};
-        for (const auto& optimality : optimalities)
-        {
-            matplot::plot(x, optimality);
-        }
-    }
-    
-    void RewardOptimalitySubplotter::setupAxes(
-        const std::vector<double>& yTicks,
-        std::string_view yLabel)
-    {
-        auto ax{matplot::gca()};
-
-        ax->font_size(m.fontSize);
-        matplot::hold(ax, matplot::on);
-        matplot::ylim(ax, {0, yTicks.back()});
-        matplot::yticks(ax, yTicks);
-        matplot::xticks(ax, m.xTicks);
-
-        if (m.column == 0)
-        {
-            matplot::ylabel(ax, yLabel);
-        }
-    }
-
     PolicyValueSubplotter PolicyValueSubplotter::make(
-        Size size,
+        PlotSize plotSize,
         unsigned columns,
         unsigned lotSize,
         unsigned lotTickInterval,
-        Limits actionLimits,
+        ActionLimits actionLimits,
         PolicyActionFn policyActionFn)
     {
         auto lotTickIndices{
@@ -110,7 +46,7 @@ namespace irl
                 })};
 
         auto f{matplot::figure(true)};
-        f->size(size.width, size.height);
+        f->size(plotSize.width, plotSize.height);
 
         return PolicyValueSubplotter{M{
             .columns{columns},
@@ -203,7 +139,7 @@ namespace irl
     }
 
     ValueIterationSubplotter ValueIterationSubplotter::make(
-        Size size,
+        PlotSize plotSize,
         unsigned columns,
         StateCount nStates,
         std::span<const unsigned> plotIterations,
@@ -211,7 +147,7 @@ namespace irl
         PolicyActionFn policyActionFn)
     {
         auto f{matplot::figure(true)};
-        f->size(size.width, size.height);
+        f->size(plotSize.width, plotSize.height);
 
         return ValueIterationSubplotter{M{
             .columns{columns},

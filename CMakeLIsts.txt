@@ -35,6 +35,8 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
         "RelWithDebInfo")
 endif()
 
+set(CMAKE_CXX_FLAGS "/utf-8 /EHsc")
+
 find_package(ArrayFire REQUIRED)
 find_package(blend2d REQUIRED)
 find_package(indicators REQUIRED)

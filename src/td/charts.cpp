@@ -4,8 +4,8 @@
 
 #include <matplot/matplot.h>
 
-#include "introRL/td/algorithm.hpp"
 #include "introRL/td/charts.hpp"
+#include "introRL/td/sarsa.hpp"
 
 namespace irl::td
 {

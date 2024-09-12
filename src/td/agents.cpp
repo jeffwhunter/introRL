@@ -14,7 +14,7 @@ namespace irl::td
         m_generator{generator}
     {}
 
-    Action EGreedy::act(const Q& q, const State& state, const Actions& actions)
+    GridAction EGreedy::act(const Q& q, const GridState& state, const GridActions& actions)
     {
         if (shouldExplore())
         {

@@ -29,7 +29,7 @@ namespace irl::td
         /// <returns>
         /// Some action the agent has picked, either exploratory or greedy.
         /// </returns>
-        Action act(const Q& q, const State& state, const Actions& actions);
+        GridAction act(const Q& q, const GridState& state, const GridActions& actions);
 
     private:
         /// <summary>

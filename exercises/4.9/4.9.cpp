@@ -9,14 +9,13 @@
 
 #include <introRL/afUtils.hpp>
 #include <introRL/iteration/algorithm.hpp>
-#include <introRL/subplotters.hpp>
+#include <introRL/iteration/subplotters.hpp>
 
 using namespace indicators::option;
 using namespace irl;
 using namespace irl::iteration;
 
-constexpr unsigned FIGURE_WIDTH{1'500};
-constexpr unsigned FIGURE_HEIGHT{750};
+PlotSize PLOT_SIZE{.width{1'500}, .height{750}};
 
 constexpr unsigned PROGRESS_WIDTH{50};
 
@@ -115,7 +114,7 @@ int main()
     indicators::show_console_cursor(false);
 
     auto plotter{ValueIterationSubplotter::make(
-        Size{FIGURE_WIDTH, FIGURE_HEIGHT},
+        PLOT_SIZE,
         SETUPS.size(),
         StateCount{N_STATES},
         PLOT_ITERATIONS,

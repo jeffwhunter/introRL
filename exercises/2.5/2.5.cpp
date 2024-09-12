@@ -13,7 +13,7 @@
 #include <introRL/bandit/algorithm.hpp>
 #include <introRL/bandit/environments.hpp>
 #include <introRL/bandit/results.hpp>
-#include <introRL/subplotters.hpp>
+#include <introRL/bandit/subplotters.hpp>
 #include <introRL/ticker.hpp>
 #include <introRL/utils.hpp>
 #include <introRL/types.hpp>
@@ -21,8 +21,7 @@
 using namespace irl;
 using namespace irl::bandit;
 
-constexpr unsigned FIGURE_WIDTH{1'000};
-constexpr unsigned FIGURE_HEIGHT{500};
+PlotSize PLOT_SIZE{.width{1'500}, .height{750}};
 constexpr unsigned FONT_SIZE{5};
 constexpr unsigned N_X_TICKS{5};
 
@@ -99,7 +98,7 @@ int main()
 
     auto plotter{
         RewardOptimalitySubplotter::make(
-            Size{.width{FIGURE_WIDTH}, .height{FIGURE_HEIGHT}},
+            PLOT_SIZE,
             SETUPS.size(),
             FONT_SIZE,
             EPSILON_NAMES,

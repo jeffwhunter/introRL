@@ -18,7 +18,7 @@ using namespace irl::td;
 constexpr Width WIDTH{10};
 constexpr Height HEIGHT{7};
 
-const Alpha A{.5};
+const Alpha A{1, 2};
 const Epsilon E{.1};
 
 constexpr StepCount N_STEPS{10'000'000};
@@ -40,20 +40,20 @@ constexpr auto CHART_NAME{"chart6.9.jpeg"};
 constexpr size_t N_EPISODES{100};
 constexpr BLRgba32 PATH_COLOUR{0x110000FF};
 
-const Actions ACTIONS{
-    Action::make(0, -1),
-    Action::make(1, 0),
-    Action::make(0, 1),
-    Action::make(-1, 0),
-    Action::make(1, -1),
-    Action::make(1, 1),
-    Action::make(-1, 1),
-    Action::make(-1, -1)};
+const GridActions ACTIONS{
+    GridAction::make(0, -1),
+    GridAction::make(1, 0),
+    GridAction::make(0, 1),
+    GridAction::make(-1, 0),
+    GridAction::make(1, -1),
+    GridAction::make(1, 1),
+    GridAction::make(-1, 1),
+    GridAction::make(-1, -1)};
 
 static std::experimental::generator<Episode> sarsaEpisodes(
     const Q& q,
-    CEnvironment auto& environment,
-    CAgent auto& agent)
+    CSarsaEnvironment auto& environment,
+    CSarsaAgent auto& agent)
 {
     while (true)
     {
@@ -68,8 +68,8 @@ int main()
     EGreedy agent{E, generator};
 
     RandomWindy<WIDTH, HEIGHT> environment{
-        State::make(0, 3),
-        State::make(7, 3),
+        GridState::make(0, 3),
+        GridState::make(7, 3),
         {0, 0, 0, -1, -1, -1, -2, -2, -1, 0},
         generator};
 
@@ -82,6 +82,11 @@ int main()
             "Running SARSA")};
 
     EGreedy demoAgent{Epsilon{0}, generator};
+
+    result.episodes = result.episodes
+        | std::views::filter(
+            [](const StepCount& step) { return step.unwrap<StepCount>() < X_LIM; })
+        | std::ranges::to<std::vector>();
 
     makeImage(
         "6.10.png",

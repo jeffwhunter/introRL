@@ -10,7 +10,7 @@
 #include <indicators/cursor_control.hpp>
 
 #include "introRL/td/agents.hpp"
-#include "introRL/td/algorithm.hpp"
+#include "introRL/td/sarsa.hpp"
 #include "introRL/td/charts.hpp"
 #include "introRL/td/concepts.hpp"
 #include "introRL/td/renderers.hpp"
@@ -46,9 +46,9 @@ namespace irl::td
         unsigned TICK_RATE = 1'000>
     [[nodiscard]] SarsaResult learnSarsa(
         const Alpha& alpha,
-        CEnvironment auto& environment,
-        CAgent auto& agent,
-        const Actions& actions,
+        CSarsaEnvironment auto& environment,
+        CSarsaAgent auto& agent,
+        const GridActions& actions,
         std::string_view title,
         indicators::Color colour = indicators::Color::blue)
     {
@@ -96,7 +96,7 @@ namespace irl::td
     /// <param name="fontSize">- The font size used.</param>
     void makeImage(
         std::string_view fileName,
-        CEnvironment auto& environment,
+        CSarsaEnvironment auto& environment,
         const std::vector<SarsaResult>& sarsaResults,
         const std::vector<std::string>& names,
         CRangeOf<Episode> auto&& demo,

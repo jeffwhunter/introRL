@@ -57,7 +57,7 @@ namespace irl::td
         BLContext& context,
         BLPoint position,
         Layout layout,
-        const CEnvironment auto& environment,
+        const CSarsaEnvironment auto& environment,
         const BLFont& font)
     {
         const size_t totalWidth{layout.columns * layout.grid};
@@ -145,11 +145,11 @@ namespace irl::td
 
         for (const auto& w : episode | std::views::slide(2))
         {
-            const State& from{w[0]};
-            const State& to{w[1]};
+            const GridState& from{w[0]};
+            const GridState& to{w[1]};
 
             auto stateToPos{
-                [&](const State& state)
+                [&](const GridState& state)
                 {
                     BLPoint doubleState{
                         static_cast<double>(state.x()),
@@ -182,7 +182,7 @@ namespace irl::td
         BLContext& context,
         BLPoint position,
         Layout layout,
-        const CEnvironment auto& environment,
+        const CSarsaEnvironment auto& environment,
         CRangeOf<Episode> auto&& demo,
         CRangeOf<BLRgba32> auto&& colours,
         const BLFont& font)

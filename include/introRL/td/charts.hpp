@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "introRL/td/algorithm.hpp"
+#include "introRL/td/sarsa.hpp"
 
 namespace irl::td
 {

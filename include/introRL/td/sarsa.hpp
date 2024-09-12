@@ -5,8 +5,8 @@
 #include <ranges>
 #include <vector>
 
-#include "introRL/math/sparse.hpp"
 #include "introRL/td/concepts.hpp"
+#include "introRL/td/types.hpp"
 #include "introRL/types.hpp"
 
 namespace irl::td
@@ -23,12 +23,12 @@ namespace irl::td
     /// <returns>The episode that played out.</returns>
     template <StepCount MAX_STEPS>
     Episode episode(
-        const Actions& actions,
+        const GridActions& actions,
         const Q& q,
-        CEnvironment auto& environment,
-        CAgent auto& agent)
+        CSarsaEnvironment auto& environment,
+        CSarsaAgent auto& agent)
     {
-        std::vector<State> result{};
+        std::vector<GridState> result{};
 
         auto state{environment.start()};
         result.push_back(state);
@@ -76,7 +76,7 @@ namespace irl::td
         /// </summary>
         /// <param name="a">- The step size of the SARSA algorithm.</param>
         /// <param name="actions">- The actions available to the agent.</param>
-        SarsaController(Alpha a, const Actions& actions) : m_a{a}, m_actions{actions} {}
+        SarsaController(Alpha a, const GridActions& actions) : m_a{a}, m_actions{actions} {}
 
         /// <summary>
         /// Uses the SARSA algorithm to produce an estimated action value table that, if
@@ -93,8 +93,8 @@ namespace irl::td
         /// An estimated action value table for a given environment.
         /// </returns>
         [[nodiscard]] SarsaResult sarsa(
-            CEnvironment auto& environment,
-            CAgent auto& agent,
+            CSarsaEnvironment auto& environment,
+            CSarsaAgent auto& agent,
             std::invocable auto&& stepCallback)
         {
             SarsaResult result{};
@@ -133,8 +133,8 @@ namespace irl::td
         /// <returns>How many steps the episode took.</returns>
         StepCount episode(
             Q& q,
-            CEnvironment auto& environment,
-            CAgent auto& agent,
+            CSarsaEnvironment auto& environment,
+            CSarsaAgent auto& agent,
             std::invocable auto&& stepCallback,
             StepCount maxSteps)
         {
@@ -169,10 +169,10 @@ namespace irl::td
         /// <param name="agent">- Controls how actions are taken.</param>
         void step(
             Q& q,
-            State& state,
-            Action& action,
-            CEnvironment auto& environment,
-            CAgent auto& agent)
+            GridState& state,
+            GridAction& action,
+            CSarsaEnvironment auto& environment,
+            CSarsaAgent auto& agent)
         {
             const auto& sPrime{environment.step(state, action)};
             const auto& aPrime{act(q, sPrime, environment, agent)};
@@ -196,16 +196,16 @@ namespace irl::td
         /// </param>
         /// <param name="agent">- Controls how actions are taken.</param>
         /// <returns></returns>
-        Action act(
+        GridAction act(
             const Q& q,
-            const State& state,
-            CEnvironment auto& environment,
-            CAgent auto& agent)
+            const GridState& state,
+            CSarsaEnvironment auto& environment,
+            CSarsaAgent auto& agent)
         {
             return agent.act(q, state, environment.valid(m_actions, state));
         }
 
         Alpha m_a{};
-        const Actions& m_actions;
+        const GridActions& m_actions;
     };
 }

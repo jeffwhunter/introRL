@@ -13,6 +13,70 @@
 namespace irl::td
 {
     /// <summary>
+    /// A random walk controlled by a coin flip.
+    /// </summary>
+    /// <typeparam name="N">The number of states to walk over.</typeparam>
+    template <StateCount N>
+    class Walk
+    {
+        static_assert(N.template unwrap<StateCount>() >= 3);
+        static_assert(N.template unwrap<StateCount>() % 2 == 1);
+
+    public:
+        /// <summary>
+        /// Returns the starting point of the walk.
+        /// </summary>
+        /// <returns>The midpoint between the two ends.</returns>
+        WalkState start() const
+        {
+            return WalkState{1U + N / 2U};
+        }
+
+        /// <summary>
+        /// Returns the next state for an action taken from some state.
+        /// </summary>
+        /// <param name="state">- The state to act from.</param>
+        /// <param name="action">- The action taken.</param>
+        /// <returns>The new state that resulted from taking action in state.</returns>
+        WalkState step(WalkState state, bool action) const
+        {
+            return action
+                ? WalkState{static_cast<unsigned>(state + 1)}
+                : WalkState{static_cast<unsigned>(state - 1)};
+        }
+
+        /// <summary>
+        /// Rewards some state.
+        /// </summary>
+        /// <param name="state">- The reward producing state.</param>
+        /// <returns>The reward produced when visiting state.</returns>
+        float reward(WalkState state) const
+        {
+            if (state == WalkState{N + 1})
+            {
+                return 1.f;
+            }
+
+            if (state == WalkState{0})
+            {
+                return -1.f;
+            }
+
+            return .0f;
+        }
+
+        /// <summary>
+        /// Returns if some state is terminal.
+        /// </summary>
+        /// <param name="state">- The state to judge for terminality.</param>
+        /// <returns>True is state is terminal, false otherwise.</returns>
+        bool done(WalkState state) const
+        {
+            return state == WalkState{0} || state == WalkState{N + 1};
+        }
+    };
+
+    /// <summary>
     /// A windy grid world.
     /// </summary>
     /// <typeparam name="W">The number of columns in the grid world.</typeparam>
@@ -30,7 +94,7 @@ namespace irl::td
         /// <param name="start">- The starting position.</param>
         /// <param name="goal">- The ending position.</param>
         /// <param name="wind">- The strength of the wind in each column.</param>
-        Windy(State start, State goal, Wind wind) :
+        Windy(GridState start, GridState goal, Wind wind) :
             m_start{std::move(start)},
             m_goal{std::move(goal)},
             m_wind{std::move(wind)}
@@ -42,7 +106,7 @@ namespace irl::td
         /// <param name="actions">- The actions to filter.</param>
         /// <param name="state">- The state in which these actions originate.</param>
         /// <returns>- The actions that are valid in state.</returns>
-        Actions valid(const Actions& actions, State state) const
+        GridActions valid(const GridActions& actions, GridState state) const
         {
             return
                 actions
@@ -56,7 +120,7 @@ namespace irl::td
         /// <param name="state">- The starting position of the step.</param>
         /// <param name="action">- The action controlling the step.</param>
         /// <returns>Where the step ends up.</returns>
-        State step(const State& state, const Action& action) const
+        GridState step(const GridState& state, const GridAction& action) const
         {
             return applyWind(state + action, wind(state.x()));
         }
@@ -65,7 +129,7 @@ namespace irl::td
         /// The starting position.
         /// </summary>
         /// <returns>The starting position.</returns>
-        State start() const
+        GridState start() const
         {
             return m_start;
         }
@@ -74,7 +138,7 @@ namespace irl::td
         /// The goal position.
         /// </summary>
         /// <returns>The goal position.</returns>
-        State goal() const
+        GridState goal() const
         {
             return m_goal;
         }
@@ -84,7 +148,7 @@ namespace irl::td
         /// </summary>
         /// <param name="state">- The state to test.</param>
         /// <returns>True if state is at the goal, false otherwise.</returns>
-        bool done(const State& state) const
+        bool done(const GridState& state) const
         {
             return state == m_goal;
         }
@@ -106,7 +170,7 @@ namespace irl::td
         /// <param name="state">- The state in which the action is taken.</param>
         /// <param name="action">- The action to test for validity.</param>
         /// <returns>True if action is available in state, false otherwise.</returns>
-        bool valid(State state, Action action) const
+        bool valid(GridState state, GridAction action) const
         {
             auto newX{static_cast<int>(state.x()) + action.x()};
             auto newY{static_cast<int>(state.y()) + action.y()};
@@ -120,9 +184,9 @@ namespace irl::td
         /// <param name="state">- The state to apply wind to.</param>
         /// <param name="wind">- The strength of the wind to apply.</param>
         /// <returns>The new state, pushed by the wind.</returns>
-        virtual State applyWind(State&& state, int wind) const
+        virtual GridState applyWind(GridState&& state, int wind) const
         {
-            State result{std::move(state)};
+            GridState result{std::move(state)};
 
             result.y() = static_cast<size_t>(
                 std::clamp(static_cast<int>(result.y()) + wind, 0, H - 1));
@@ -130,8 +194,8 @@ namespace irl::td
             return result;
         }
 
-        State m_start;
-        State m_goal;
+        GridState m_start;
+        GridState m_goal;
         Wind m_wind;
     };
 
@@ -152,8 +216,8 @@ namespace irl::td
         /// <param name="wind">- The strength of the wind in each column.</param>
         /// <param name="generator">- A random number generator.</param>
         RandomWindy(
-            State start,
-            State goal,
+            GridState start,
+            GridState goal,
             Windy<W, H>::Wind wind,
             std::mt19937& generator)
         :
@@ -168,9 +232,9 @@ namespace irl::td
         /// <param name="state">- The state to apply wind to.</param>
         /// <param name="wind">- The strength of the wind to apply.</param>
         /// <returns>The new state, pushed by the varying wind.</returns>
-        State applyWind(State&& state, int wind) const override
+        GridState applyWind(GridState&& state, int wind) const override
         {
-            State result{std::move(state)};
+            GridState result{std::move(state)};
 
             if (wind != 0)
             {

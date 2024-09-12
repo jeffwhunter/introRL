@@ -15,16 +15,15 @@
 #include "introRL/types.hpp"
 #include "introRL/cartesian.hpp"
 #include "introRL/iteration/algorithm.hpp"
+#include "introRL/iteration/subplotters.hpp"
 #include "introRL/iteration/types.hpp"
 #include "introRL/stats.hpp"
-#include "introRL/subplotters.hpp"
 #include "introRL/utils.hpp"
 
 using namespace irl;
 using namespace irl::iteration;
 
-constexpr unsigned FIGURE_WIDTH{1'500};
-constexpr unsigned FIGURE_HEIGHT{750};
+PlotSize PLOT_SIZE{.width{1'500}, .height{750}};
 
 constexpr unsigned LOT_SIZE{21};
 constexpr unsigned LOT_TICK_INTERVAL{4};
@@ -236,11 +235,11 @@ int main()
 
     auto plotter{
         PolicyValueSubplotter::make(
-            Size{.width{FIGURE_WIDTH}, .height{FIGURE_HEIGHT}},
+            PLOT_SIZE,
             POLICY_ITERATIONS,
             LOT_SIZE,
             LOT_TICK_INTERVAL,
-            Limits{.low{-MAX_MOVES}, .high{MAX_MOVES}},
+            ActionLimits{.low{-MAX_MOVES}, .high{MAX_MOVES}},
             [&](const Policy& policy)
             {
                 return expecter.indicesToActions(ActionIndices{policy.unwrap<Policy>()});

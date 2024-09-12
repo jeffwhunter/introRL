@@ -19,7 +19,7 @@ using namespace irl::td;
 constexpr Width WIDTH{10};
 constexpr Height HEIGHT{7};
 
-const Alpha A{.5};
+const Alpha A{1, 2};
 const Epsilon E{.1};
 
 constexpr StepCount N_STEPS{100'000};
@@ -40,7 +40,7 @@ constexpr auto CHART_NAME{"chart6.10.jpeg"};
 struct Setup
 {
     std::string name{};
-    Actions actions{};
+    GridActions actions{};
     indicators::Color barColour{};
     BLRgba32 pathColour{};
 };
@@ -50,10 +50,10 @@ const auto SETUPS{
         {
             "nesw",
             {
-                Action::make(0, -1),
-                Action::make(1, 0),
-                Action::make(0, 1),
-                Action::make(-1, 0)
+                GridAction::make(0, -1),
+                GridAction::make(1, 0),
+                GridAction::make(0, 1),
+                GridAction::make(-1, 0)
             },
             indicators::Color::blue,
             BLRgba32{0xFF0000FF}
@@ -61,14 +61,14 @@ const auto SETUPS{
         {
             "king's moves",
             {
-                Action::make(0, -1),
-                Action::make(1, 0),
-                Action::make(0, 1),
-                Action::make(-1, 0),
-                Action::make(1, -1),
-                Action::make(1, 1),
-                Action::make(-1, 1),
-                Action::make(-1, -1)
+                GridAction::make(0, -1),
+                GridAction::make(1, 0),
+                GridAction::make(0, 1),
+                GridAction::make(-1, 0),
+                GridAction::make(1, -1),
+                GridAction::make(1, 1),
+                GridAction::make(-1, 1),
+                GridAction::make(-1, -1)
             },
             indicators::Color::red,
             BLRgba32{0xFFFF0000}
@@ -76,15 +76,15 @@ const auto SETUPS{
         {
             "king's + wait",
             {
-                Action::make(0, -1),
-                Action::make(1, 0),
-                Action::make(0, 1),
-                Action::make(-1, 0),
-                Action::make(1, -1),
-                Action::make(1, 1),
-                Action::make(-1, 1),
-                Action::make(-1, -1),
-                Action::make()
+                GridAction::make(0, -1),
+                GridAction::make(1, 0),
+                GridAction::make(0, 1),
+                GridAction::make(-1, 0),
+                GridAction::make(1, -1),
+                GridAction::make(1, 1),
+                GridAction::make(-1, 1),
+                GridAction::make(-1, -1),
+                GridAction::make()
             },
             indicators::Color::yellow,
             BLRgba32{0xFFCCCC00}
@@ -97,8 +97,8 @@ int main()
     EGreedy agent{E, generator};
 
     Windy<WIDTH, HEIGHT> environment{
-        State::make(0, 3),
-        State::make(7, 3),
+        GridState::make(0, 3),
+        GridState::make(7, 3),
         {0, 0, 0, -1, -1, -1, -2, -2, -1, 0}};
 
     auto results{

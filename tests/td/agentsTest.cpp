@@ -15,26 +15,26 @@ namespace irl::td
 
         Q q{};
 
-        q(State::make(0, 1), Action::make(-1, 1)) = 1.f;
-        q(State::make(0, 1), Action::make(1, -1)) = 2.f;
-        q(State::make(1, 0), Action::make(0, -1)) = 2.f;
-        q(State::make(1, 0), Action::make(-1, 0)) = 1.f;
+        q(GridState::make(0, 1), GridAction::make(-1, 1)) = 1.f;
+        q(GridState::make(0, 1), GridAction::make(1, -1)) = 2.f;
+        q(GridState::make(1, 0), GridAction::make(0, -1)) = 2.f;
+        q(GridState::make(1, 0), GridAction::make(-1, 0)) = 1.f;
 
         EGreedy testee{E, generator};
 
         REQUIRE(
             testee.act(
                 q,
-                State::make(0, 1),
-                {Action::make(-1, 1), Action::make(1, -1)}) ==
-            Action::make(1, -1));
+                GridState::make(0, 1),
+                {GridAction::make(-1, 1), GridAction::make(1, -1)}) ==
+            GridAction::make(1, -1));
 
         REQUIRE(
             testee.act(
                 q,
-                State::make(1, 0),
-                {Action::make(0, -1), Action::make(-1, 0)}) ==
-            Action::make(0, -1));
+                GridState::make(1, 0),
+                {GridAction::make(0, -1), GridAction::make(-1, 0)}) ==
+            GridAction::make(0, -1));
     }
 
     TEST_CASE("td.agents.TableAgent.act.only picks from given actions")
@@ -44,19 +44,19 @@ namespace irl::td
 
         Q q{};
 
-        q(State::make(0, 1), Action::make(-1, 1)) = 1.f;
-        q(State::make(0, 1), Action::make(1, -1)) = 2.f;
-        q(State::make(1, 0), Action::make(0, -1)) = 2.f;
-        q(State::make(1, 0), Action::make(-1, 0)) = 1.f;
+        q(GridState::make(0, 1), GridAction::make(-1, 1)) = 1.f;
+        q(GridState::make(0, 1), GridAction::make(1, -1)) = 2.f;
+        q(GridState::make(1, 0), GridAction::make(0, -1)) = 2.f;
+        q(GridState::make(1, 0), GridAction::make(-1, 0)) = 1.f;
 
         EGreedy testee{E, generator};
 
         REQUIRE(
-            testee.act(q, State::make(0, 1), {Action::make(-1, 1)}) ==
-            Action::make(-1, 1));
+            testee.act(q, GridState::make(0, 1), {GridAction::make(-1, 1)}) ==
+            GridAction::make(-1, 1));
 
         REQUIRE(
-            testee.act(q, State::make(1, 0), {Action::make(-1, 0)}) ==
-            Action::make(-1, 0));
+            testee.act(q, GridState::make(1, 0), {GridAction::make(-1, 0)}) ==
+            GridAction::make(-1, 0));
     }
 }

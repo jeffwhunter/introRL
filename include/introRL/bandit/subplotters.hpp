@@ -1,30 +1,18 @@
 #pragma once
 
-#include <functional>
 #include <ranges>
-#include <set>
-#include <span>
 #include <string>
-#include <utility>
-#include <variant>
 #include <vector>
 
 #include <matplot/matplot.h>
 
 #include "introRL/types.hpp"
-#include "introRL/iteration/types.hpp"
 #include "introRL/bandit/results.hpp"
 
 namespace af { class array; }
 
-namespace irl
+namespace irl::bandit
 {
-    struct Size
-    {
-        unsigned width;
-        unsigned height;
-    };
-
     /// <summary>
     /// A subplotter that plots the rewards and chance of optimal action for a number of
     /// runs of a simple bandit algorithm.
@@ -39,7 +27,7 @@ namespace irl
         /// <summary>
         /// Makes a RewardOptimalitySubplotter.
         /// </summary>
-        /// <param name="size">- The width and height of the overall plot.</param>
+        /// <param name="plotSize">- The width and height of the overall plot.</param>
         /// <param name="columns">- The number of columns in the plot.</param>
         /// <param name="fontSize">- The font size of the plot.</param>
         /// <param name="names">- The names of the runs to be plotted.</param>
@@ -52,7 +40,7 @@ namespace irl
         /// </param>
         /// <returns>A RewardOptimalitySubplotter.</returns>
         static RewardOptimalitySubplotter make(
-            Size size,
+            PlotSize plotSize,
             unsigned columns,
             float fontSize,
             std::ranges::range auto&& names,
@@ -61,7 +49,7 @@ namespace irl
             std::ranges::range auto&& optimalityTicks)
         {
             auto hFigure{matplot::figure(true)};
-            hFigure->size(size.width, size.height);
+            hFigure->size(plotSize.width, plotSize.height);
 
             auto hLegend = matplot::legend(matplot::subplot(2, columns, 0), {});
             hLegend->box(false);
@@ -144,138 +132,5 @@ namespace irl
         /// </param>
         /// <param name="yLabel">- The label of the y-axis of the subplot.</param>
         void setupAxes(const std::vector<double>& yTicks, std::string_view yLabel);
-    };
-
-    struct Limits
-    {
-        int low;
-        int high;
-    };
-
-    /// <summary>
-    /// A subplotter that plots the policy and state value estimates for a run of the
-    /// rental policy problem.
-    /// </summary>
-    class PolicyValueSubplotter
-    {
-        using PolicyActionFn = std::function<af::array(const iteration::Policy&)>;
-
-    public:
-
-        /// <summary>
-        /// Makes a PolicyValueSubplotter
-        /// </summary>
-        /// <param name="size">- The width and height of the overall plot.</param>
-        /// <param name="columns">- The number of columns in the plot.</param>
-        /// <param name="lotSize">
-        /// - The side length of the policy and state values.
-        /// </param>
-        /// <param name="lotTickInterval">
-        /// - How often to display ticks on the x and y axes.
-        /// </param>
-        /// <param name="actionLimits">- The bounds of possible actions.</param>
-        /// <param name="policyActionFn">
-        /// - A function that turns action indices into a number of cars moved between
-        /// lots.
-        /// </param>
-        /// <returns>A PolicyValueSubplotter.</returns>
-        static PolicyValueSubplotter make(
-            Size size,
-            unsigned columns,
-            unsigned lotSize,
-            unsigned lotTickInterval,
-            Limits actionLimits,
-            PolicyActionFn policyActionFn);
-
-        /// <summary>
-        /// Plots a policy on an upper subplot.
-        /// </summary>
-        /// <param name="policy">- The policy to plot.</param>
-        void plot(const iteration::Policy& policy);
-
-        /// <summary>
-        /// Plots an state value estimate on a lower subplot.
-        /// </summary>
-        /// <param name="stateValue">- The state value estimate to plot.</param>
-        void plot(const iteration::StateValue& stateValue);
-
-        /// <summary>
-        /// Shows the final plot.
-        /// </summary>
-        void show();
-
-    private:
-        struct M
-        {
-            const unsigned columns{};
-            const unsigned lotSize{};
-
-            const std::array<double, 2> actionLimits{};
-            const PolicyActionFn policyActionFn{};
-
-            const std::vector<double> actionTickLocations{};
-            const std::vector<double> lotTickLocations{};
-            const std::vector<std::string> lotTickLabels{};
-
-            unsigned column{};
-        } m;
-
-        explicit PolicyValueSubplotter(M m);
-
-        /// <summary>
-        /// Sets up some common properties for both subplots.
-        /// </summary>
-        /// <param name="title">- The y axis title.</param>
-        void setupAxes(std::string_view title);
-
-        /// <summary>
-        /// Reshapes an array from {N*N} to {N, N}.
-        /// </summary>
-        /// <param name="data">The shape {N*N} array to reshape.</param>
-        /// <returns>The shape {N, N} array that was reshaped.</returns>
-        af::array reshape(const af::array& data);
-    };
-
-    class ValueIterationSubplotter
-    {
-        using PolicyActionFn = std::function<af::array(const iteration::Policy&)>;
-
-    public:
-
-        static ValueIterationSubplotter make(
-            Size size,
-            unsigned columns,
-            StateCount nStates,
-            std::span<const unsigned> plotIterations,
-            std::span<const unsigned> valueXTicks,
-            PolicyActionFn policyActionFn);
-
-        void setupAxes(
-            std::string_view title,
-            std::span<const double> policyXTicks,
-            std::span<const double> policyYTicks);
-
-        void plot(const iteration::StateValue& stateValue);
-        void plot(const iteration::Policy& policy);
-
-        void show();
-
-    private:
-        struct M
-        {
-            const unsigned columns{};
-            const unsigned nStates{};
-            const std::set<unsigned> plotIterations{};
-            const std::vector<double> valueXTicks{};
-            const PolicyActionFn policyActionFn{};
-
-            unsigned column{};
-            unsigned count{};
-        } m;
-
-        explicit ValueIterationSubplotter(M m);
-
-        matplot::axes_handle policyAx() const;
-        matplot::axes_handle valueAx() const;
     };
 }
